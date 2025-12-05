@@ -11,18 +11,37 @@
 import uno
 import unohelper
 
-from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
-from com.sun.star.awt.MessageBoxButtons import DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
-from com.sun.star.awt.MessageBoxType import MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+from com.sun.star.awt.MessageBoxButtons import (
+    BUTTONS_OK,
+    BUTTONS_OK_CANCEL,
+    BUTTONS_YES_NO,
+    BUTTONS_YES_NO_CANCEL,
+    BUTTONS_RETRY_CANCEL,
+    BUTTONS_ABORT_IGNORE_RETRY,
+)
+from com.sun.star.awt.MessageBoxButtons import (
+    DEFAULT_BUTTON_OK,
+    DEFAULT_BUTTON_CANCEL,
+    DEFAULT_BUTTON_RETRY,
+    DEFAULT_BUTTON_YES,
+    DEFAULT_BUTTON_NO,
+    DEFAULT_BUTTON_IGNORE,
+)
+from com.sun.star.awt.MessageBoxType import (
+    MESSAGEBOX,
+    INFOBOX,
+    WARNINGBOX,
+    ERRORBOX,
+    QUERYBOX,
+)
 
 from com.sun.star.ui import XUIElementFactory
 from com.sun.star.lang import XComponent
-from com.sun.star.ui import XUIElement, XToolPanel,XSidebarPanel, LayoutSize
-from com.sun.star.frame import XDispatch,XDispatchProvider
+from com.sun.star.ui import XUIElement, XToolPanel, XSidebarPanel, LayoutSize
+from com.sun.star.frame import XDispatch, XDispatchProvider
 from com.sun.star.ui.UIElementType import TOOLPANEL as UET_TOOLPANEL
 
 from ui_logic.Panel1 import Panel1
-
 
 
 def messageBox(MsgText, MsgTitle, MsgType=MESSAGEBOX, MsgButtons=BUTTONS_OK):
@@ -34,7 +53,7 @@ def messageBox(MsgText, MsgTitle, MsgType=MESSAGEBOX, MsgButtons=BUTTONS_OK):
     mBox.execute()
 
 
-class ElementFactory( unohelper.Base, XUIElementFactory):
+class ElementFactory(unohelper.Base, XUIElementFactory):
     """
     UNO service that implements the com/sun/star/ui/XUIElementFactory interface.
     If you write a new factory then add it to Factories.xcu
@@ -80,12 +99,13 @@ class ElementFactory( unohelper.Base, XUIElementFactory):
 
 g_ImplementationHelper = unohelper.ImplementationHelper()
 g_ImplementationHelper.addImplementation(
-                ElementFactory,
-                "org.librethinker.LibreThinkerExtension",
-                ("com.sun.star.task.Job",),)
+    ElementFactory,
+    "org.librethinker.LibreThinkerExtension",
+    ("com.sun.star.task.Job",),
+)
 
 
-class XUIPanel( unohelper.Base,  XSidebarPanel, XUIElement, XToolPanel, XComponent):
+class XUIPanel(unohelper.Base, XSidebarPanel, XUIElement, XToolPanel, XComponent):
 
     def __init__(self, ctx, frame, xParentWindow, url):
 
@@ -101,8 +121,12 @@ class XUIPanel( unohelper.Base,  XSidebarPanel, XUIElement, XToolPanel, XCompone
             dialogUrl = "vnd.sun.star.extension://org.librethinker.LibreThinkerExtension/empty_dialog.xdl"
             # smgr = self.ctx.ServiceManager
 
-            provider = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.ContainerWindowProvider", self.ctx)
-            self.window = provider.createContainerWindow(dialogUrl, "", self.xParentWindow, None)
+            provider = self.ctx.ServiceManager.createInstanceWithContext(
+                "com.sun.star.awt.ContainerWindowProvider", self.ctx
+            )
+            self.window = provider.createContainerWindow(
+                dialogUrl, "", self.xParentWindow, None
+            )
 
         return self
 
@@ -122,9 +146,11 @@ class XUIPanel( unohelper.Base,  XSidebarPanel, XUIElement, XToolPanel, XCompone
     def dispose(self):
         pass
 
-    def addEventListener(self, ev): pass
+    def addEventListener(self, ev):
+        pass
 
-    def removeEventListener(self, ev): pass
+    def removeEventListener(self, ev):
+        pass
 
     # XToolPanel
     def createAccessible(self, parent):
@@ -144,14 +170,15 @@ class XUIPanel( unohelper.Base,  XSidebarPanel, XUIElement, XToolPanel, XCompone
     def getMinimalWidth(self):
         return 300
 
+
 class test(unohelper.Base, XDispatch, XDispatchProvider):
 
     IMPLE_NAME = "org.librethinker.ProtocolHandler"
-    SERVICE_NAMES = IMPLE_NAME,
+    SERVICE_NAMES = (IMPLE_NAME,)
 
     @classmethod
     def get_imple(klass):
-        #pydevBrk()
+        # pydevBrk()
         return klass, klass.IMPLE_NAME, klass.SERVICE_NAMES
 
     def __init__(self, *args):
@@ -167,11 +194,11 @@ class test(unohelper.Base, XDispatch, XDispatchProvider):
         self.showDefaultMenuCommand(featureURL)
 
     def addStatusListener(self, listener, featureURL):
-        #print('addStatusListener', featureURL.Path)
+        # print('addStatusListener', featureURL.Path)
         return
 
     def removeStatusListener(self, listener, featureURL):
-        #print('removeStatusListener', featureURL.Path)
+        # print('removeStatusListener', featureURL.Path)
         return
 
     def showDefaultMenuCommand(self, featureURL):
@@ -184,29 +211,44 @@ class test(unohelper.Base, XDispatch, XDispatchProvider):
         sm = ctx.ServiceManager
         dialog = sm.createInstanceWithContext("com.sun.star.awt.UnoControlDialog", ctx)
 
-        if featureURL.Path == 'Panel1':
+        if featureURL.Path == "Panel1":
             panel_option_name = '""'
             if panel_option_name:
                 app = ""(ctx, dialog)
                 app.showDialog()
             else:
-                messageBox(featureURL.Path, 'DefaultMenuCommand', MsgType=MESSAGEBOX, MsgButtons=BUTTONS_OK)
+                messageBox(
+                    featureURL.Path,
+                    "DefaultMenuCommand",
+                    MsgType=MESSAGEBOX,
+                    MsgButtons=BUTTONS_OK,
+                )
 
-        if featureURL.Path == 'Panel2':
-            panel_option_name = ''
+        if featureURL.Path == "Panel2":
+            panel_option_name = ""
             if panel_option_name:
                 app = (ctx, dialog)
                 app.showDialog()
             else:
-                messageBox(featureURL.Path, 'DefaultMenuCommand', MsgType=MESSAGEBOX, MsgButtons=BUTTONS_OK)
+                messageBox(
+                    featureURL.Path,
+                    "DefaultMenuCommand",
+                    MsgType=MESSAGEBOX,
+                    MsgButtons=BUTTONS_OK,
+                )
 
-        if featureURL.Path == 'Panel3':
-            panel_option_name = ''
+        if featureURL.Path == "Panel3":
+            panel_option_name = ""
             if panel_option_name:
                 app = (ctx, dialog)
                 app.showDialog()
             else:
-                messageBox(featureURL.Path, 'DefaultMenuCommand', MsgType=MESSAGEBOX, MsgButtons=BUTTONS_OK)
+                messageBox(
+                    featureURL.Path,
+                    "DefaultMenuCommand",
+                    MsgType=MESSAGEBOX,
+                    MsgButtons=BUTTONS_OK,
+                )
 
 
 g_ImplementationHelper.addImplementation(*test.get_imple())
@@ -220,7 +262,7 @@ def showPanels(panelWin, url):
 
     ctx = uno.getComponentContext()
     # url is set in Sidebar.xcu
-    if url == 'private:resource/toolpanel/LibreThinkerExtension/Panel1':
+    if url == "private:resource/toolpanel/LibreThinkerExtension/Panel1":
 
         pos_y = 20
 
@@ -229,5 +271,3 @@ def showPanels(panelWin, url):
         panel_height = app.getHeight()
 
         return panel_height + pos_y
-
-

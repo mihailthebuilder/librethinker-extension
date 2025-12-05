@@ -7,11 +7,34 @@
 #
 # =============================================================================
 
-import uno
+import uno, tempfile, unohelper
+import os, random, string, threading
+from .api import get_answer
 from com.sun.star.awt.PosSize import POSSIZE
-from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
-from com.sun.star.awt.MessageBoxButtons import DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
-from com.sun.star.awt.MessageBoxType import MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+from com.sun.star.awt.MessageBoxButtons import (
+    BUTTONS_OK,
+    BUTTONS_OK_CANCEL,
+    BUTTONS_YES_NO,
+    BUTTONS_YES_NO_CANCEL,
+    BUTTONS_RETRY_CANCEL,
+    BUTTONS_ABORT_IGNORE_RETRY,
+)
+from com.sun.star.awt.MessageBoxButtons import (
+    DEFAULT_BUTTON_OK,
+    DEFAULT_BUTTON_CANCEL,
+    DEFAULT_BUTTON_RETRY,
+    DEFAULT_BUTTON_YES,
+    DEFAULT_BUTTON_NO,
+    DEFAULT_BUTTON_IGNORE,
+)
+from com.sun.star.awt.MessageBoxType import (
+    MESSAGEBOX,
+    INFOBOX,
+    WARNINGBOX,
+    ERRORBOX,
+    QUERYBOX,
+)
+from com.sun.star.beans import PropertyValue
 
 try:
     from ui.Panel1_UI import Panel1_UI
@@ -45,7 +68,10 @@ class Panel1(Panel1_UI):
     """
     Class documentation...
     """
-    def __init__(self, ctx=uno.getComponentContext(), dialog=None, **kwargs):                   # (self, panelWin, context=uno.getComponentContext()):
+
+    def __init__(
+        self, ctx=uno.getComponentContext(), dialog=None, **kwargs
+    ):  # (self, panelWin, context=uno.getComponentContext()):
 
         self.ctx = ctx
         self.dialog = dialog
@@ -89,12 +115,66 @@ class Panel1(Panel1_UI):
     #               Action events
     # -----------------------------------------------------------
 
+    def get_all_txt(self):
+        tmp_dir = tempfile.gettempdir()
+        name = (
+            "".join(random.choices(string.ascii_lowercase + string.digits, k=12))
+            + ".txt"
+        )
+        out_path = os.path.join(tmp_dir, name)
+
+        file_url = unohelper.systemPathToFileUrl(os.path.abspath(out_path))
+
+        props = (
+            PropertyValue(Name="FilterName", Value="Text (encoded)"),
+            PropertyValue(
+                Name="FilterData", Value=(PropertyValue(Name="Encoding", Value="UTF8"),)
+            ),
+        )
+
+        self.document.storeToURL(file_url, props)
+
+        with open(out_path, "r") as f:
+            txt = f.read()
+
+        try:
+            os.remove(out_path)
+        except OSError:
+            pass
+
+        return txt
 
     def Submit_OnClick(self):
-        self.DialogModel.Title = "It's Alive! - Submit"
-        self.messageBox("It's Alive! - Submit", "Event: OnClick", INFOBOX)
-        # TODO: not implemented
+        try:
+            self.DialogModel.Title = "Text input"
+            docText = self.get_all_txt()
+            inputPrompt = self.DialogContainer.getControl("Prompt").getText()
 
+            llmPrompt = f"{inputPrompt}\n\n{docText}"
+
+            self.StatusText.Label = "Loading..."
+            self.Submit.Enabled = False
+            threading.Thread(target=self._submit_background, args=(llmPrompt,)).start()
+
+        except Exception as e:
+            self.messageBox(str(e), "Error", ERRORBOX)
+
+    def _submit_background(self, prompt: str):
+        try:
+            answer = get_answer(prompt)
+
+            desktop = self.ctx.ServiceManager.createInstanceWithContext(
+                "com.sun.star.frame.Desktop", self.ctx
+            )
+            model = desktop.getCurrentComponent()
+            selection = model.CurrentController.getSelection()
+            text_range = selection.getByIndex(0)
+            text_range.setString(answer)
+
+            self.StatusText.Label = "Done."
+            self.Submit.Enabled = True
+        except Exception as e:
+            self.messageBox(str(e), "Error", ERRORBOX)
 
     # -----------------------------------------------------------
     #               Window (dialog/panel) events
@@ -113,6 +193,7 @@ class Panel1(Panel1_UI):
         #    cntr.setPosSize(cntr.PosSize.X, cntr.PosSize.Y, width, cntr.PosSize.Height, POSSIZE)
         pass
 
+
 def Run_Panel1(*args):
     """
     Intended to be used in a development environment only
@@ -120,25 +201,27 @@ def Run_Panel1(*args):
     After development copy this file back
     """
     try:
-        ctx = remote_ctx                    # IDE
+        ctx = remote_ctx  # IDE
     except:
-        ctx = uno.getComponentContext()     # UI
+        ctx = uno.getComponentContext()  # UI
 
     # dialog
-    dialog = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.UnoControlDialog", ctx)
+    dialog = ctx.ServiceManager.createInstanceWithContext(
+        "com.sun.star.awt.UnoControlDialog", ctx
+    )
 
     app = Panel1(ctx=ctx, dialog=dialog)
     app.showDialog()
 
 
-g_exportedScripts = Run_Panel1,
+g_exportedScripts = (Run_Panel1,)
 
 # -------------------------------------
 # HELPER FOR AN IDE
 # -------------------------------------
 
 if __name__ == "__main__":
-    """ Connect to LibreOffice proccess.
+    """Connect to LibreOffice proccess.
     1) Start the office in shell with command:
     soffice "--accept=socket,host=127.0.0.1,port=2002,tcpNoDelay=1;urp;StarOffice.ComponentContext" --norestore
     2) Run script
@@ -146,17 +229,21 @@ if __name__ == "__main__":
     import os
     import sys
 
-    sys.path.append(os.path.join(os.path.dirname(__file__), 'pythonpath'))
+    sys.path.append(os.path.join(os.path.dirname(__file__), "pythonpath"))
 
     local_ctx = uno.getComponentContext()
-    resolver = local_ctx.ServiceManager.createInstance("com.sun.star.bridge.UnoUrlResolver")
+    resolver = local_ctx.ServiceManager.createInstance(
+        "com.sun.star.bridge.UnoUrlResolver"
+    )
     try:
-        remote_ctx = resolver.resolve("uno:socket,"
-                                        "host=127.0.0.1,"
-                                        "port=2002,"
-                                        "tcpNoDelay=1;"
-                                        "urp;"
-                                        "StarOffice.ComponentContext")
+        remote_ctx = resolver.resolve(
+            "uno:socket,"
+            "host=127.0.0.1,"
+            "port=2002,"
+            "tcpNoDelay=1;"
+            "urp;"
+            "StarOffice.ComponentContext"
+        )
     except Exception as err:
         print(err)
 
