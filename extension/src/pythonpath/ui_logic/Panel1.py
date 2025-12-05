@@ -158,6 +158,7 @@ class Panel1(Panel1_UI):
 
         except Exception as e:
             self.messageBox(str(e), "Error", ERRORBOX)
+            self._reset()
 
     def _submit_background(self, prompt: str):
         try:
@@ -171,10 +172,14 @@ class Panel1(Panel1_UI):
             text_range = selection.getByIndex(0)
             text_range.setString(answer)
 
-            self.StatusText.Label = "Done."
-            self.Submit.Enabled = True
         except Exception as e:
             self.messageBox(str(e), "Error", ERRORBOX)
+        finally:
+            self._reset()
+
+    def _reset(self):
+        self.StatusText.Label = "Done."
+        self.Submit.Enabled = True
 
     # -----------------------------------------------------------
     #               Window (dialog/panel) events
