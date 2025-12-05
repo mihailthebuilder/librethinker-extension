@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog"
+    xmlns:script="http://openoffice.org/2000/script" dlg:id="LlmDialog" dlg:left="204" dlg:top="117"
+    dlg:width="156" dlg:height="156" dlg:closeable="true" dlg:moveable="true">
+    <dlg:styles>
+        <dlg:style dlg:style-id="0" dlg:border="0x0" />
+    </dlg:styles>
+    <dlg:bulletinboard>
+        <dlg:button dlg:id="Submit" dlg:tab-index="1" dlg:left="8" dlg:top="123" dlg:width="64"
+            dlg:height="23" dlg:value="Submit" />
+        <dlg:textfield dlg:style-id="0" dlg:id="Prompt" dlg:tab-index="0" dlg:left="8" dlg:top="8"
+            dlg:width="136" dlg:height="104" dlg:valign="top" dlg:vscroll="true"
+            dlg:multiline="true" dlg:value="YourPromptHere" />
+        <dlg:radiogroup>
+            <dlg:radio dlg:id="AppendOption" dlg:tab-index="3" dlg:left="82" dlg:top="138"
+                dlg:width="64" dlg:height="8" dlg:value="Add text at the end"
+                dlg:group-name="EditOrAppend" dlg:checked="true" />
+            <dlg:radio dlg:id="ReplaceOption" dlg:tab-index="2" dlg:left="82" dlg:top="127"
+                dlg:width="64" dlg:height="10" dlg:value="Replace existing text"
+                dlg:group-name="EditOrAppend" />
+        </dlg:radiogroup>
+    </dlg:bulletinboard>
+</dlg:window>
