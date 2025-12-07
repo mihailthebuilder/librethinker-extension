@@ -1,3 +1,1 @@
-Sidebar description Sidebar description Sidebar description
-Sidebar description Sidebar description Sidebar description
-Sidebar description Sidebar description Sidebar description
+AI Copilot extension for LibreOffice Writer with sidebar integration. Use OpenAI API (GPT, ChatGPT) to edit, rewrite, summarize, translate, or generate content with AI assistance. Looking to add other LLMs soon.
