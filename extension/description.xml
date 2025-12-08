@@ -46,13 +46,13 @@ Tip: When edited open file in browser to check for errors.
     <!--
     Licence
     Directory: registration
+    -->
 
     <registration>
         <simple-license accept-by="admin" suppress-on-update="true">
-            <license-text xlink:href="registration/license.txt" lang="en-GB"/>
+            <license-text xlink:href="registration/license.txt" lang="en-GB" />
         </simple-license>
     </registration>
-    -->
 
     <!--
     <release-notes>
