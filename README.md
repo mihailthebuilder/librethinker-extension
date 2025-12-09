@@ -12,7 +12,7 @@ Fetch your OpenAI API key: https://platform.openai.com/settings/organization/api
 
 Set the key as the `LT_LLM_API_KEY` environment variable in your operating system.
 
-Download the extension: https://github.com/mihailthebuilder/librethinker-extension/releases/download/v0.1.0/LibreThinker.oxt
+Download the latest extension file (.oxt) from the releases page: https://github.com/mihailthebuilder/librethinker-extension/releases
 
 After downloading the extension file (.oxt), you need to install it in LibreOffice Writer. Either double-click the .oxt file, or open LibreOffice Writer, go to *Tools > Extension Manager > Add*, and select the downloaded .oxt file.
 
