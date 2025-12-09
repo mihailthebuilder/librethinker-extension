@@ -14,7 +14,7 @@ Set the key as the `LT_LLM_API_KEY` environment variable in your operating syste
 
 Download the extension: https://github.com/mihailthebuilder/librethinker-extension/releases/download/v0.1.0/LibreThinker.oxt
 
-After downloading the extension file (.oxt), you need to install it in LibreOffice Writer. Either double-click the .oxt file, or open LibreOffice Writer, go to Tools > Extension Manager > Add, and select the downloaded .oxt file.
+After downloading the extension file (.oxt), you need to install it in LibreOffice Writer. Either double-click the .oxt file, or open LibreOffice Writer, go to *Tools > Extension Manager > Add*, and select the downloaded .oxt file.
 
 Open the sidebar; you should see the lightbulb icon for the extension.
 
