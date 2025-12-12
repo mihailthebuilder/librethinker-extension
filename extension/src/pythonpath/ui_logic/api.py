@@ -1,6 +1,5 @@
 import urllib.request
 import json
-import os
 
 
 def get_answer(inputPrompt: str, docText: str, api_key: str | None) -> str:
