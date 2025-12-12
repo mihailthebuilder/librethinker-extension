@@ -186,7 +186,7 @@ class Panel1(Panel1_UI):
     def _reset(self):
         label = "Done."
         if self.FreeModel:
-            label += " You are using the free model, quality may not be as good. Set up an API key for better results."
+            label += " You're using a free tier, quality won't be\ngreat. Set up an API key for better results."
 
         self.StatusText.Label = label
         self.Submit.Enabled = True
