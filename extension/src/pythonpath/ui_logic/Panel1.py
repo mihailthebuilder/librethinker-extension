@@ -175,18 +175,20 @@ class Panel1(Panel1_UI):
             text_range.setString(answer)
 
         except Exception as e:
-            error = "Error getting answer. "
+            error = "Error getting answer."
             if self.FreeModel:
-                error += "You are using the free model which may have issues. Try again later or set up an API key."
+                error += "\nYou are using the free model which may have issues. Try again later or set up an API key."
 
-            self.messageBox(str(e), error, ERRORBOX)
+            error += f"\nDetails: {str(e)}"
+
+            self.messageBox(error, "Error", ERRORBOX)
         finally:
             self._reset()
 
     def _reset(self):
         label = "Done."
         if self.FreeModel:
-            label += " You're using a free tier, quality won't be\ngreat. Set up an API key for better results."
+            label += " You're using a free tier, quality won't be\ngreat. Set up an API key for better results.\nGo to librethinker.com to find out more."
 
         self.StatusText.Label = label
         self.Submit.Enabled = True
