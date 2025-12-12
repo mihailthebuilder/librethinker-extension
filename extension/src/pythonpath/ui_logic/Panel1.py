@@ -179,7 +179,7 @@ class Panel1(Panel1_UI):
             if self.FreeModel:
                 error += "You are using the free model which may have issues. Try again later or set up an API key."
 
-            self.messageBox(str(e), "Error", ERRORBOX)
+            self.messageBox(str(e), error, ERRORBOX)
         finally:
             self._reset()
 
