@@ -3,20 +3,21 @@ import json
 import os
 
 
-def get_answer(prompt: str) -> str:
-    LLM_API_URL = "https://api.librethinker.com/api/v0/responses"
-    LLM_API_KEY = os.environ["LT_LLM_API_KEY"]
+def get_answer(inputPrompt: str, docText: str, api_key: str | None) -> str:
+    LLM_API_URL = "https://api.librethinker.com/api/v1/responses"
 
-    body = json.dumps({"input": prompt}).encode("utf-8")
+    body = json.dumps({"prompt": inputPrompt, "text": docText}).encode("utf-8")
+    headers = {
+        "Content-Type": "application/json",
+    }
+    if api_key is not None:
+        headers["X-Third-Party-Key"] = api_key
 
     req = urllib.request.Request(
         LLM_API_URL,
         data=body,
         method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "X-Third-Party-Key": LLM_API_KEY,
-        },
+        headers=headers,
     )
 
     with urllib.request.urlopen(req) as response:

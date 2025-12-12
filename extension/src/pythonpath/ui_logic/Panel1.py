@@ -150,19 +150,21 @@ class Panel1(Panel1_UI):
             docText = self.get_all_txt()
             inputPrompt = self.DialogContainer.getControl("Prompt").getText()
 
-            llmPrompt = f"{inputPrompt}\n\n{docText}"
-
             self.StatusText.Label = "Loading..."
             self.Submit.Enabled = False
-            threading.Thread(target=self._submit_background, args=(llmPrompt,)).start()
+            threading.Thread(
+                target=self._submit_background, args=(inputPrompt, docText)
+            ).start()
 
         except Exception as e:
             self.messageBox(str(e), "Error", ERRORBOX)
             self._reset()
 
-    def _submit_background(self, prompt: str):
+    def _submit_background(self, inputPrompt: str, docText: str):
         try:
-            answer = get_answer(prompt)
+            api_key = os.environ.get("LT_LLM_API_KEY")
+            self.FreeModel = api_key is None
+            answer = get_answer(inputPrompt, docText, api_key)
 
             desktop = self.ctx.ServiceManager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", self.ctx
@@ -173,12 +175,20 @@ class Panel1(Panel1_UI):
             text_range.setString(answer)
 
         except Exception as e:
+            error = "Error getting answer. "
+            if self.FreeModel:
+                error += "You are using the free model which may have issues. Try again later or set up an API key."
+
             self.messageBox(str(e), "Error", ERRORBOX)
         finally:
             self._reset()
 
     def _reset(self):
-        self.StatusText.Label = "Done."
+        label = "Done."
+        if self.FreeModel:
+            label += " You are using the free model, quality may not be as good. Set up an API key for better results."
+
+        self.StatusText.Label = label
         self.Submit.Enabled = True
 
     # -----------------------------------------------------------
