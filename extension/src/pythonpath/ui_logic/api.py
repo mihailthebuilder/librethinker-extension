@@ -8,6 +8,7 @@ class Request:
         self.inputPrompt = inputPrompt
         self.docText = docText
         self.apiKey = apiKey
+        self.id = id
 
         self.platform = platform.platform()
         self.extensionVersion = "0.1.2"
