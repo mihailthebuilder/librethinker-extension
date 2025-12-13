@@ -24,7 +24,7 @@ def get_answer(request: Request) -> str:
     ).encode("utf-8")
     headers = {
         "Content-Type": "application/json",
-        "X-Request-ID": request.id,
+        "X-Client-Request-ID": request.id,
         "X-Client-Platform": request.platform,
         "X-Extension-Version": request.extensionVersion,
     }
