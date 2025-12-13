@@ -9,7 +9,7 @@
 
 import uno, tempfile, unohelper
 import os, random, string, threading
-from .api import get_answer
+from .api import get_answer, Request
 from com.sun.star.awt.PosSize import POSSIZE
 from com.sun.star.awt.MessageBoxButtons import (
     BUTTONS_OK,
@@ -162,9 +162,11 @@ class Panel1(Panel1_UI):
 
     def _submit_background(self, inputPrompt: str, docText: str):
         try:
-            api_key = os.environ.get("LT_LLM_API_KEY")
-            self.FreeModel = api_key is None
-            answer = get_answer(inputPrompt, docText, api_key)
+            apiKey = os.environ.get("LT_LLM_API_KEY")
+            self.FreeModel = apiKey is None
+
+            request = Request(inputPrompt=inputPrompt, docText=docText, apiKey=apiKey)
+            answer = get_answer(request)
 
             desktop = self.ctx.ServiceManager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", self.ctx

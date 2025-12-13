@@ -1,15 +1,23 @@
 import urllib.request
 import json
 import platform
+from dataclasses import dataclass
 
 
-def get_answer(inputPrompt: str, docText: str, api_key: str | None) -> str:
+@dataclass
+class Request:
+    inputPrompt: str
+    docText: str
+    apiKey: str | None
+
+
+def get_answer(request: Request) -> str:
     url = "https://api.librethinker.com/api/v1/responses/"
 
     body = json.dumps(
         {
-            "prompt": inputPrompt,
-            "text": docText,
+            "prompt": request.inputPrompt,
+            "text": request.docText,
             "platform": platform.platform(),
             "extensionVersion": "0.1.2",
         }
@@ -19,8 +27,8 @@ def get_answer(inputPrompt: str, docText: str, api_key: str | None) -> str:
     }
 
     append_url = "free"
-    if api_key is not None:
-        headers["X-Third-Party-Key"] = api_key
+    if request.apiKey is not None:
+        headers["X-Third-Party-Key"] = request.apiKey
         append_url = "byok"
 
     url += append_url
