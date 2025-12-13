@@ -1,14 +1,16 @@
 import urllib.request
 import json
 import platform
-from dataclasses import dataclass
 
 
-@dataclass
 class Request:
-    inputPrompt: str
-    docText: str
-    apiKey: str | None
+    def __init__(self, inputPrompt: str, docText: str, apiKey: str | None, id: str):
+        self.inputPrompt = inputPrompt
+        self.docText = docText
+        self.apiKey = apiKey
+
+        self.platform = platform.platform()
+        self.extensionVersion = "0.1.2"
 
 
 def get_answer(request: Request) -> str:
@@ -18,12 +20,13 @@ def get_answer(request: Request) -> str:
         {
             "prompt": request.inputPrompt,
             "text": request.docText,
-            "platform": platform.platform(),
-            "extensionVersion": "0.1.2",
         }
     ).encode("utf-8")
     headers = {
         "Content-Type": "application/json",
+        "X-Request-ID": request.id,
+        "X-Client-Platform": request.platform,
+        "X-Extension-Version": request.extensionVersion,
     }
 
     append_url = "free"
