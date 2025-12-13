@@ -9,6 +9,8 @@
 
 import uno, tempfile, unohelper
 import os, random, string, threading
+from uuid import uuid4
+
 from .api import get_answer, Request
 from com.sun.star.awt.PosSize import POSSIZE
 from com.sun.star.awt.MessageBoxButtons import (
@@ -165,7 +167,10 @@ class Panel1(Panel1_UI):
             apiKey = os.environ.get("LT_LLM_API_KEY")
             self.FreeModel = apiKey is None
 
-            request = Request(inputPrompt=inputPrompt, docText=docText, apiKey=apiKey)
+            requestId = str(uuid4())
+            request = Request(
+                id=requestId, inputPrompt=inputPrompt, docText=docText, apiKey=apiKey
+            )
             answer = get_answer(request)
 
             desktop = self.ctx.ServiceManager.createInstanceWithContext(
@@ -181,7 +186,7 @@ class Panel1(Panel1_UI):
             if self.FreeModel:
                 error += "\nYou are using the free model which may have issues. Try again later or set up an API key."
 
-            error += f"\nDetails: {str(e)}"
+            error += f"\nRequest ID: {requestId}.\nDetails: {str(e)}"
 
             self.messageBox(error, "Error", ERRORBOX)
         finally:
