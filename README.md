@@ -16,7 +16,7 @@ Open the sidebar in LibreOffice; you should see the lightbulb icon for the exten
 
 ## OpenAI model
 
-Fetch your OpenAI API key: https://platform.openai.com/settings/organization/api-keys 
+Generate an API key on the OpenAI platform: https://platform.openai.com/settings/organization/api-keys 
 
 Set the key as the `LT_LLM_API_KEY` environment variable in your operating system.
 
