@@ -51,6 +51,8 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.DialogModel.Closeable = True
         self.DialogModel.Moveable = True
 
+        dialogLeftPadding = "6"
+
         # --------- create an instance of Button control, set properties ---
         self.Submit = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlButtonModel"
@@ -58,7 +60,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         self.Submit.Name = "Submit"
         self.Submit.TabIndex = 1
-        self.Submit.PositionX = "8"
+        self.Submit.PositionX = dialogLeftPadding
         self.Submit.PositionY = "143"
         self.Submit.Width = 64
         self.Submit.Height = 23
@@ -78,7 +80,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         self.Prompt.Name = "Prompt"
         self.Prompt.TabIndex = 0
-        self.Prompt.PositionX = "8"
+        self.Prompt.PositionX = dialogLeftPadding
         self.Prompt.PositionY = "8"
         self.Prompt.Width = 136
         self.Prompt.Height = 104
@@ -94,7 +96,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
         self.StatusText.Name = "StatusText"
-        self.StatusText.PositionX = "8"
+        self.StatusText.PositionX = dialogLeftPadding
         self.StatusText.PositionY = "112"
         self.StatusText.Width = 136
         self.StatusText.Height = 30
