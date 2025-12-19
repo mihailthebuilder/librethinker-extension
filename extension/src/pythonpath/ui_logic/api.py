@@ -1,20 +1,36 @@
 import urllib.request
 import json
 import platform
+from dataclasses import dataclass, fields
 
 
 class Request:
-    def __init__(self, inputPrompt: str, docText: str, apiKey: str | None, id: str):
+    def __init__(
+        self,
+        inputPrompt: str,
+        docText: str,
+        apiKey: str | None,
+        id: str,
+        extensionVersion: str,
+    ):
         self.inputPrompt = inputPrompt
         self.docText = docText
         self.apiKey = apiKey
         self.id = id
+        self.extensionVersion = extensionVersion
 
         self.platform = platform.platform()
-        self.extensionVersion = "0.1.2"
 
 
-def get_answer(request: Request) -> str:
+@dataclass
+class Response:
+    response: str | None = None
+    latestExtensionVersion: str
+    success: bool
+    message: str
+
+
+def get_answer(request: Request) -> Response:
     url = "https://api.librethinker.com/api/v1/responses/"
 
     body = json.dumps(
@@ -44,6 +60,10 @@ def get_answer(request: Request) -> str:
         headers=headers,
     )
 
-    with urllib.request.urlopen(req) as response:
+    with urllib.request.urlopen(req, timeout=10) as response:
         data = json.loads(response.read().decode("utf-8"))
-        return data["response"]
+
+        allowed_keys = {f.name for f in fields(Response)}
+        filtered_data = {k: v for k, v in data.items() if k in allowed_keys}
+
+        return Response(**filtered_data)

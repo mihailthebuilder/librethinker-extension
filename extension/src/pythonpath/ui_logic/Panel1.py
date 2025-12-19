@@ -85,6 +85,8 @@ class Panel1(Panel1_UI):
         # get document
         self.document = desktop.getCurrentComponent()
 
+        self.ExtensionVersion = "0.1.3"
+
     def getHeight(self):
         return self.DialogContainer.Size.Height
 
@@ -169,7 +171,11 @@ class Panel1(Panel1_UI):
 
             requestId = str(uuid4())
             request = Request(
-                id=requestId, inputPrompt=inputPrompt, docText=docText, apiKey=apiKey
+                id=requestId,
+                inputPrompt=inputPrompt,
+                docText=docText,
+                apiKey=apiKey,
+                extensionVersion=self.ExtensionVersion,
             )
             answer = get_answer(request)
 
@@ -179,7 +185,7 @@ class Panel1(Panel1_UI):
             model = desktop.getCurrentComponent()
             selection = model.CurrentController.getSelection()
             text_range = selection.getByIndex(0)
-            text_range.setString(answer)
+            text_range.setString(answer.response)
 
         except Exception as e:
             error = "Error getting answer."
