@@ -178,6 +178,7 @@ class Panel1(Panel1_UI):
                 extensionVersion=self.ExtensionVersion,
             )
             answer = get_answer(request)
+            self.LatestExtensionVersion = answer.latestExtensionVersion
 
             desktop = self.ctx.ServiceManager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", self.ctx
@@ -200,8 +201,11 @@ class Panel1(Panel1_UI):
 
     def _reset(self):
         label = "Done."
+        if self.ExtensionVersion != self.LatestExtensionVersion:
+            label += " New version is out, please update."
+
         if self.FreeModel:
-            label += " You're using a free tier, quality won't be\ngreat. Set up an API key for better results.\nGo to librethinker.com to find out more."
+            label += "\nThis is a free tier model, quality won't be\ngreat. Set up an API key for better results.\nGo to librethinker.com to find out more."
 
         self.StatusText.Label = label
         self.Submit.Enabled = True
