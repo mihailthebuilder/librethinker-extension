@@ -80,7 +80,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.Submit.Name = "Submit"
         self.Submit.TabIndex = 1
         self.Submit.PositionX = dialogLeftPadding
-        self.Submit.PositionY = "112"
+        self.Submit.PositionY = "120"
         self.Submit.Width = 64
         self.Submit.Height = 23
         self.Submit.Label = "Submit"
@@ -96,7 +96,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.SelectedTextOption.Name = "SelectedText"
         self.SelectedTextOption.TabIndex = 3
         self.SelectedTextOption.PositionX = "82"
-        self.SelectedTextOption.PositionY = "112"
+        self.SelectedTextOption.PositionY = "124"
         self.SelectedTextOption.Width = 64
         self.SelectedTextOption.Height = 10
         self.SelectedTextOption.Label = "Selected text"
@@ -112,7 +112,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.EntireDocumentOption.Name = "EntireDocument"
         self.EntireDocumentOption.TabIndex = 2
         self.EntireDocumentOption.PositionX = "82"
-        self.EntireDocumentOption.PositionY = "127"
+        self.EntireDocumentOption.PositionY = "135"
         self.EntireDocumentOption.Width = 64
         self.EntireDocumentOption.Height = 10
         self.EntireDocumentOption.Label = "Entire document"
@@ -130,9 +130,9 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         )
         self.StatusText.Name = "StatusText"
         self.StatusText.PositionX = dialogLeftPadding
-        self.StatusText.PositionY = "143"
+        self.StatusText.PositionY = "148"
         self.StatusText.Width = 136
-        self.StatusText.Height = 30
+        self.StatusText.Height = 50
         self.StatusText.Label = ""
 
         self.DialogModel.insertByName("StatusText", self.StatusText)

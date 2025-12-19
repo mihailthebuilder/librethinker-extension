@@ -86,7 +86,7 @@ class Panel1(Panel1_UI):
         # get document
         self.document = desktop.getCurrentComponent()
 
-        self.ExtensionVersion = "0.1.2"
+        self.ExtensionVersion = "0.1.3"
 
     def getHeight(self):
         return self.DialogContainer.Size.Height
@@ -211,7 +211,7 @@ class Panel1(Panel1_UI):
         if self.FreeModel:
             label += " You're using a free tier model. Bring your OpenAI API key for better results; visit librethinker.com to find out more."
 
-        label = wrap_text(input=label, limit=40)
+        label = wrap_text(input=label, limit=50)
 
         self.StatusText.Label = label
         self.Submit.Enabled = True
