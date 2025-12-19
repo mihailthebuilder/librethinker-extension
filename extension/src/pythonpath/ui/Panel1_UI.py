@@ -89,37 +89,37 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.DialogModel.insertByName("Submit", self.Submit)
 
         # --------- create an instance of RadioButton control, set properties ---
-        self.AppendOption = self.DialogModel.createInstance(
+        self.SelectedTextOption = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlRadioButtonModel"
         )
 
-        self.AppendOption.Name = "AppendOption"
-        self.AppendOption.TabIndex = 3
-        self.AppendOption.PositionX = "82"
-        self.AppendOption.PositionY = "138"
-        self.AppendOption.Width = 64
-        self.AppendOption.Height = 8
-        self.AppendOption.Label = "Add text at the end"
-        self.AppendOption.State = True
+        self.SelectedTextOption.Name = "SelectedText"
+        self.SelectedTextOption.TabIndex = 3
+        self.SelectedTextOption.PositionX = "82"
+        self.SelectedTextOption.PositionY = "112"
+        self.SelectedTextOption.Width = 64
+        self.SelectedTextOption.Height = 10
+        self.SelectedTextOption.Label = "Selected text"
 
         # inserts the control model into the dialog model
-        self.DialogModel.insertByName("AppendOption", self.AppendOption)
+        self.DialogModel.insertByName("SelectedTextOption", self.SelectedTextOption)
 
         # --------- create an instance of RadioButton control, set properties ---
-        self.ReplaceOption = self.DialogModel.createInstance(
+        self.EntireDocumentOption = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlRadioButtonModel"
         )
 
-        self.ReplaceOption.Name = "ReplaceOption"
-        self.ReplaceOption.TabIndex = 2
-        self.ReplaceOption.PositionX = "82"
-        self.ReplaceOption.PositionY = "127"
-        self.ReplaceOption.Width = 64
-        self.ReplaceOption.Height = 10
-        self.ReplaceOption.Label = "Replace selected text"
+        self.EntireDocumentOption.Name = "EntireDocument"
+        self.EntireDocumentOption.TabIndex = 2
+        self.EntireDocumentOption.PositionX = "82"
+        self.EntireDocumentOption.PositionY = "127"
+        self.EntireDocumentOption.Width = 64
+        self.EntireDocumentOption.Height = 10
+        self.EntireDocumentOption.Label = "Entire document"
+        self.EntireDocumentOption.State = True
 
         # inserts the control model into the dialog model
-        self.DialogModel.insertByName("ReplaceOption", self.ReplaceOption)
+        self.DialogModel.insertByName("EntireDocumentOption", self.EntireDocumentOption)
 
         # add the action listener
         self.DialogContainer.getControl("Submit").addActionListener(self)
