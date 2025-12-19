@@ -80,7 +80,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.Submit.Name = "Submit"
         self.Submit.TabIndex = 1
         self.Submit.PositionX = dialogLeftPadding
-        self.Submit.PositionY = "143"
+        self.Submit.PositionY = "112"
         self.Submit.Width = 64
         self.Submit.Height = 23
         self.Submit.Label = "Submit"
@@ -97,7 +97,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         )
         self.StatusText.Name = "StatusText"
         self.StatusText.PositionX = dialogLeftPadding
-        self.StatusText.PositionY = "112"
+        self.StatusText.PositionY = "143"
         self.StatusText.Width = 136
         self.StatusText.Height = 30
         self.StatusText.Label = ""
