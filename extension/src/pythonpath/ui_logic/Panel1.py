@@ -178,6 +178,9 @@ class Panel1(Panel1_UI):
                 extensionVersion=self.ExtensionVersion,
             )
             answer = get_answer(request)
+            if not answer.success:
+                raise Exception(answer.message)
+
             self.LatestExtensionVersion = answer.latestExtensionVersion
 
             desktop = self.ctx.ServiceManager.createInstanceWithContext(
