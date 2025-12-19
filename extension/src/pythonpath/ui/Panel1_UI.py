@@ -53,6 +53,25 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         dialogLeftPadding = "6"
 
+        # --------- create an instance of Edit control, set properties ---
+        self.Prompt = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlEditModel"
+        )
+
+        self.Prompt.Name = "Prompt"
+        self.Prompt.TabIndex = 0
+        self.Prompt.PositionX = dialogLeftPadding
+        self.Prompt.PositionY = "8"
+        self.Prompt.Width = 136
+        self.Prompt.Height = 104
+        self.Prompt.Text = "YourPromptHere"
+        self.Prompt.MultiLine = True
+        self.Prompt.VerticalAlign = "TOP"
+        self.Prompt.AutoVScroll = True
+
+        # inserts the control model into the dialog model
+        self.DialogModel.insertByName("Prompt", self.Prompt)
+
         # --------- create an instance of Button control, set properties ---
         self.Submit = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlButtonModel"
@@ -72,25 +91,6 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         # add the action listener
         self.DialogContainer.getControl("Submit").addActionListener(self)
         self.DialogContainer.getControl("Submit").setActionCommand("Submit_OnClick")
-
-        # --------- create an instance of Edit control, set properties ---
-        self.Prompt = self.DialogModel.createInstance(
-            "com.sun.star.awt.UnoControlEditModel"
-        )
-
-        self.Prompt.Name = "Prompt"
-        self.Prompt.TabIndex = 0
-        self.Prompt.PositionX = dialogLeftPadding
-        self.Prompt.PositionY = "8"
-        self.Prompt.Width = 136
-        self.Prompt.Height = 104
-        self.Prompt.Text = "YourPromptHere"
-        self.Prompt.MultiLine = True
-        self.Prompt.VerticalAlign = "TOP"
-        self.Prompt.AutoVScroll = True
-
-        # inserts the control model into the dialog model
-        self.DialogModel.insertByName("Prompt", self.Prompt)
 
         self.StatusText = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
