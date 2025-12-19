@@ -149,10 +149,23 @@ class Panel1(Panel1_UI):
 
         return txt
 
+    def get_selected_txt(self):
+        desktop = self.ctx.ServiceManager.createInstanceWithContext(
+            "com.sun.star.frame.Desktop", self.ctx
+        )
+        model = desktop.getCurrentComponent()
+        selection = model.CurrentController.getSelection()
+        text_range = selection.getByIndex(0)
+        return text_range.getString()
+
     def Submit_OnClick(self):
         try:
             self.DialogModel.Title = "Text input"
-            docText = self.get_all_txt()
+            docText = (
+                self.get_all_txt()
+                if self.EntireDocumentOption.State
+                else self.get_selected_txt()
+            )
             inputPrompt = self.DialogContainer.getControl("Prompt").getText()
 
             self.StatusText.Label = "Loading..."
@@ -190,7 +203,8 @@ class Panel1(Panel1_UI):
             model = desktop.getCurrentComponent()
             selection = model.CurrentController.getSelection()
             text_range = selection.getByIndex(0)
-            text_range.setString(answer.response)
+            previous_text = text_range.getString()
+            text_range.setString(previous_text + answer.response)
 
         except Exception as e:
             error = "Error getting answer."
