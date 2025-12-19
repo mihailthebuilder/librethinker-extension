@@ -24,10 +24,10 @@ class Request:
 
 @dataclass
 class Response:
-    response: str | None = None
     latestExtensionVersion: str
     success: bool
     message: str
+    response: str | None = None
 
 
 def get_answer(request: Request) -> Response:
