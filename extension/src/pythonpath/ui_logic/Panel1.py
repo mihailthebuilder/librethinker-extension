@@ -176,7 +176,8 @@ class Panel1(Panel1_UI):
 
         except Exception as e:
             self.messageBox(str(e), "Error", ERRORBOX)
-            self._reset()
+            self.StatusText.Label = ""
+            self.Submit.Enabled = True
 
     def _submit_background(self, inputPrompt: str, docText: str):
         try:
@@ -191,6 +192,7 @@ class Panel1(Panel1_UI):
                 apiKey=apiKey,
                 extensionVersion=self.ExtensionVersion,
             )
+
             answer = get_answer(request)
             if not answer.success:
                 raise Exception(answer.message)
@@ -206,6 +208,18 @@ class Panel1(Panel1_UI):
             previous_text = text_range.getString()
             text_range.setString(previous_text + answer.response)
 
+            label = "Done."
+            if self.ExtensionVersion != self.LatestExtensionVersion:
+                label += " New version is out, please update."
+
+            if self.FreeModel:
+                label += " You're using a free tier model. Bring your OpenAI API key for better results; visit librethinker.com to find out more."
+
+            label = wrap_text(input=label, limit=50)
+
+            self.StatusText.Label = label
+            self.Submit.Enabled = True
+
         except Exception as e:
             error = "Error getting answer."
             if self.FreeModel:
@@ -214,21 +228,8 @@ class Panel1(Panel1_UI):
             error += f"\nRequest ID: {requestId}.\nDetails: {str(e)}"
 
             self.messageBox(error, "Error", ERRORBOX)
-        finally:
-            self._reset()
-
-    def _reset(self):
-        label = "Done."
-        if self.ExtensionVersion != self.LatestExtensionVersion:
-            label += " New version is out, please update."
-
-        if self.FreeModel:
-            label += " You're using a free tier model. Bring your OpenAI API key for better results; visit librethinker.com to find out more."
-
-        label = wrap_text(input=label, limit=50)
-
-        self.StatusText.Label = label
-        self.Submit.Enabled = True
+            self.StatusText.Label = ""
+            self.Submit.Enabled = True
 
     # -----------------------------------------------------------
     #               Window (dialog/panel) events
