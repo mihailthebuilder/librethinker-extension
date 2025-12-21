@@ -160,7 +160,9 @@ class Panel1(Panel1_UI):
 
     def Submit_OnClick(self):
         try:
-            self.DialogModel.Title = "Text input"
+            self.StatusText.Label = "Loading..."
+            self.Submit.Enabled = False
+
             docText = (
                 self.get_all_txt()
                 if self.EntireDocumentOption.State
@@ -168,8 +170,12 @@ class Panel1(Panel1_UI):
             )
             inputPrompt = self.DialogContainer.getControl("Prompt").getText()
 
-            self.StatusText.Label = "Loading..."
-            self.Submit.Enabled = False
+            CHARACTER_LIMIT = 380_000
+            if len(docText + inputPrompt) > CHARACTER_LIMIT:
+                raise Exception(
+                    f"Input text is too long ({len(docText) + len(inputPrompt)} characters).\nPlease reduce the size to under {CHARACTER_LIMIT} characters."
+                )
+
             threading.Thread(
                 target=self._submit_background, args=(inputPrompt, docText)
             ).start()
