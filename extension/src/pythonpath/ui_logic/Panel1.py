@@ -86,7 +86,7 @@ class Panel1(Panel1_UI):
         # get document
         self.document = desktop.getCurrentComponent()
 
-        self.ExtensionVersion = "0.1.3"
+        self.ExtensionVersion = "0.1.4"
 
     def getHeight(self):
         return self.DialogContainer.Size.Height
