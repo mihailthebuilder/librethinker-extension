@@ -219,7 +219,7 @@ class Panel1(Panel1_UI):
                 label += " New version is out, please update."
 
             if self.FreeModel:
-                label += " You're using a free tier model. Bring your OpenAI API key for better results; visit librethinker.com to find out more."
+                label += " You're using a free model; visit librethinker.com to learn about alternatives."
 
             label = wrap_text(input=label, limit=50)
 
