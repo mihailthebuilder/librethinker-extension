@@ -1,1 +1,1 @@
-AI Copilot extension for LibreOffice Writer with sidebar integration. Use OpenAI API (GPT, ChatGPT) to edit, rewrite, summarize, translate, or generate content with AI assistance. Looking to add other LLMs soon.
+AI Copilot for LibreOffice Writer. Use a free LLM (no signup required), or bring your OpenAI API key. Generative AI assistant for rephrasing text, summarizing documents, proofreading, and other writing help.
