@@ -10,7 +10,7 @@
 import uno, tempfile, unohelper
 import os, random, string, threading
 from uuid import uuid4
-from .utils import wrap_text
+from .utils import wrap_text, is_older
 
 from .api import get_answer, Request
 from com.sun.star.awt.PosSize import POSSIZE
@@ -86,7 +86,7 @@ class Panel1(Panel1_UI):
         # get document
         self.document = desktop.getCurrentComponent()
 
-        self.ExtensionVersion = "0.1.5"
+        self.ExtensionVersion = "0.1.6"
 
     def getHeight(self):
         return self.DialogContainer.Size.Height
@@ -215,7 +215,7 @@ class Panel1(Panel1_UI):
             text_range.setString(previous_text + answer.response)
 
             label = "Done."
-            if self.ExtensionVersion != self.LatestExtensionVersion:
+            if is_older(self.ExtensionVersion, self.LatestExtensionVersion):
                 label += " New version is out, please update."
 
             if self.FreeModel:
