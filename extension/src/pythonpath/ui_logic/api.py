@@ -2,6 +2,7 @@ import urllib.request
 import json
 import platform
 from dataclasses import dataclass, fields
+from typing import Optional
 
 
 class Request:
@@ -9,7 +10,7 @@ class Request:
         self,
         inputPrompt: str,
         docText: str,
-        apiKey: str | None,
+        apiKey: Optional[str],
         id: str,
         extensionVersion: str,
     ):
@@ -18,7 +19,6 @@ class Request:
         self.apiKey = apiKey
         self.id = id
         self.extensionVersion = extensionVersion
-
         self.platform = platform.platform()
 
 
@@ -27,7 +27,7 @@ class Response:
     latestExtensionVersion: str
     success: bool
     message: str
-    response: str | None = None
+    response: Optional[str] = None
 
 
 def get_answer(request: Request) -> Response:
@@ -39,6 +39,7 @@ def get_answer(request: Request) -> Response:
             "text": request.docText,
         }
     ).encode("utf-8")
+
     headers = {
         "Content-Type": "application/json",
         "X-Client-Request-ID": request.id,
@@ -51,10 +52,8 @@ def get_answer(request: Request) -> Response:
         headers["X-Third-Party-Key"] = request.apiKey
         append_url = "byok"
 
-    url += append_url
-
     req = urllib.request.Request(
-        url,
+        url + append_url,
         data=body,
         method="POST",
         headers=headers,
