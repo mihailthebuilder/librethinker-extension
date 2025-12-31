@@ -21,7 +21,7 @@ Tip: When edited open file in browser to check for errors.
     -->
     <identifier value="org.librethinker.LibreThinkerExtension" />
 
-    <version value="0.1.6" />
+    <version value="0.1.7" />
 
     <platform value="all" />
 
