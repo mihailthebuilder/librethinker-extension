@@ -59,7 +59,7 @@ def get_answer(request: Request) -> Response:
         headers=headers,
     )
 
-    with urllib.request.urlopen(req, timeout=120) as response:
+    with urllib.request.urlopen(req, timeout=180) as response:
         data = json.loads(response.read().decode("utf-8"))
 
         allowed_keys = {f.name for f in fields(Response)}
