@@ -86,7 +86,7 @@ class Panel1(Panel1_UI):
         # get document
         self.document = desktop.getCurrentComponent()
 
-        self.ExtensionVersion = "0.1.7"
+        self.ExtensionVersion = "0.1.8"
 
     def getHeight(self):
         return self.DialogContainer.Size.Height
@@ -139,7 +139,7 @@ class Panel1(Panel1_UI):
 
         self.document.storeToURL(file_url, props)
 
-        with open(out_path, "r") as f:
+        with open(out_path, "r", encoding="utf-8-sig", errors="replace") as f:
             txt = f.read()
 
         try:
