@@ -214,7 +214,7 @@ class test(unohelper.Base, XDispatch, XDispatchProvider):
         if featureURL.Path == "Panel1":
             panel_option_name = '""'
             if panel_option_name:
-                app = ""(ctx, dialog)
+                app = Panel1(ctx, dialog)
                 app.showDialog()
             else:
                 messageBox(
@@ -224,31 +224,31 @@ class test(unohelper.Base, XDispatch, XDispatchProvider):
                     MsgButtons=BUTTONS_OK,
                 )
 
-        if featureURL.Path == "Panel2":
-            panel_option_name = ""
-            if panel_option_name:
-                app = (ctx, dialog)
-                app.showDialog()
-            else:
-                messageBox(
-                    featureURL.Path,
-                    "DefaultMenuCommand",
-                    MsgType=MESSAGEBOX,
-                    MsgButtons=BUTTONS_OK,
-                )
+        # if featureURL.Path == "Panel2":
+        #     panel_option_name = ""
+        #     if panel_option_name:
+        #         app = (ctx, dialog)
+        #         app.showDialog()
+        #     else:
+        #         messageBox(
+        #             featureURL.Path,
+        #             "DefaultMenuCommand",
+        #             MsgType=MESSAGEBOX,
+        #             MsgButtons=BUTTONS_OK,
+        #         )
 
-        if featureURL.Path == "Panel3":
-            panel_option_name = ""
-            if panel_option_name:
-                app = (ctx, dialog)
-                app.showDialog()
-            else:
-                messageBox(
-                    featureURL.Path,
-                    "DefaultMenuCommand",
-                    MsgType=MESSAGEBOX,
-                    MsgButtons=BUTTONS_OK,
-                )
+        # if featureURL.Path == "Panel3":
+        #     panel_option_name = ""
+        #     if panel_option_name:
+        #         app = (ctx, dialog)
+        #         app.showDialog()
+        #     else:
+        #         messageBox(
+        #             featureURL.Path,
+        #             "DefaultMenuCommand",
+        #             MsgType=MESSAGEBOX,
+        #             MsgButtons=BUTTONS_OK,
+        #         )
 
 
 g_ImplementationHelper.addImplementation(*test.get_imple())
