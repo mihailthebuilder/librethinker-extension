@@ -88,35 +88,36 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("Submit", self.Submit)
 
-        # --------- create an instance of RadioButton control, set properties ---
+        # --------- create an instance of CheckBox control for input selection ---
         self.SelectedTextOption = self.DialogModel.createInstance(
-            "com.sun.star.awt.UnoControlRadioButtonModel"
+            "com.sun.star.awt.UnoControlCheckBoxModel"
         )
 
-        self.SelectedTextOption.Name = "SelectedText"
+        self.SelectedTextOption.Name = "SelectedTextOption"
         self.SelectedTextOption.TabIndex = 3
         self.SelectedTextOption.PositionX = "82"
         self.SelectedTextOption.PositionY = "124"
         self.SelectedTextOption.Width = 64
         self.SelectedTextOption.Height = 10
         self.SelectedTextOption.Label = "Selected text"
+        self.SelectedTextOption.State = 0
 
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("SelectedTextOption", self.SelectedTextOption)
 
-        # --------- create an instance of RadioButton control, set properties ---
+        # --------- create an instance of CheckBox control for input selection ---
         self.EntireDocumentOption = self.DialogModel.createInstance(
-            "com.sun.star.awt.UnoControlRadioButtonModel"
+            "com.sun.star.awt.UnoControlCheckBoxModel"
         )
 
-        self.EntireDocumentOption.Name = "EntireDocument"
+        self.EntireDocumentOption.Name = "EntireDocumentOption"
         self.EntireDocumentOption.TabIndex = 2
         self.EntireDocumentOption.PositionX = "82"
         self.EntireDocumentOption.PositionY = "135"
         self.EntireDocumentOption.Width = 64
         self.EntireDocumentOption.Height = 10
         self.EntireDocumentOption.Label = "Entire document"
-        self.EntireDocumentOption.State = True
+        self.EntireDocumentOption.State = 1
 
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("EntireDocumentOption", self.EntireDocumentOption)

@@ -12,8 +12,9 @@ import os, random, string, threading
 from uuid import uuid4
 from .utils import wrap_text, is_older
 
-from .api import get_answer, Request
+from .api import get_answer, get_direct_answer, Request
 from com.sun.star.awt.PosSize import POSSIZE
+from com.sun.star.awt import XItemListener
 from com.sun.star.awt.MessageBoxButtons import (
     BUTTONS_OK,
     BUTTONS_OK_CANCEL,
@@ -67,7 +68,7 @@ except:
 # -------------------------------------------------------------------
 
 
-class Panel1(Panel1_UI):
+class Panel1(Panel1_UI, XItemListener):
     """
     Class documentation...
     """
@@ -88,6 +89,152 @@ class Panel1(Panel1_UI):
 
         self.ExtensionVersion = "0.1.8"
 
+        # Add direct model access controls
+        self._add_direct_model_controls()
+
+    def _add_direct_model_controls(self):
+        """Add UI controls for direct model access (Ollama/LM Studio)"""
+        dialogLeftPadding = 6
+
+        # Read default values from environment variables
+        direct_enabled = os.environ.get("LT_DIRECT_ENABLED", "").lower() in ("1", "true")
+        direct_endpoint = os.environ.get("LT_DIRECT_ENDPOINT", "http://localhost:11434/v1")
+        direct_model = os.environ.get("LT_DIRECT_MODEL", "llama3")
+        direct_api_key = os.environ.get("LT_DIRECT_API_KEY", "")
+
+        # Add Replace/Append checkboxes (using checkboxes to avoid radio button auto-grouping issues)
+        self.ReplaceOption = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlCheckBoxModel"
+        )
+        self.ReplaceOption.Name = "ReplaceOption"
+        self.ReplaceOption.TabIndex = 4
+        self.ReplaceOption.PositionX = 82
+        self.ReplaceOption.PositionY = 146
+        self.ReplaceOption.Width = 64
+        self.ReplaceOption.Height = 10
+        self.ReplaceOption.Label = "Replace text"
+        self.ReplaceOption.State = 0
+        self.DialogModel.insertByName("ReplaceOption", self.ReplaceOption)
+
+        self.AppendOption = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlCheckBoxModel"
+        )
+        self.AppendOption.Name = "AppendOption"
+        self.AppendOption.TabIndex = 5
+        self.AppendOption.PositionX = 82
+        self.AppendOption.PositionY = 157
+        self.AppendOption.Width = 64
+        self.AppendOption.Height = 10
+        self.AppendOption.Label = "Append to text"
+        self.AppendOption.State = 1
+        self.DialogModel.insertByName("AppendOption", self.AppendOption)
+
+        # Move StatusText down to make room for new controls
+        self.StatusText.PositionY = 260
+
+        # Checkbox: Direct model access
+        self.DirectModelCheckbox = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlCheckBoxModel"
+        )
+        self.DirectModelCheckbox.Name = "DirectModelCheckbox"
+        self.DirectModelCheckbox.PositionX = dialogLeftPadding
+        self.DirectModelCheckbox.PositionY = 170
+        self.DirectModelCheckbox.Width = 136
+        self.DirectModelCheckbox.Height = 10
+        self.DirectModelCheckbox.Label = "Direct model access"
+        self.DirectModelCheckbox.State = 1 if direct_enabled else 0
+        self.DialogModel.insertByName("DirectModelCheckbox", self.DirectModelCheckbox)
+
+        # Text field: Endpoint
+        self.EndpointLabel = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedTextModel"
+        )
+        self.EndpointLabel.Name = "EndpointLabel"
+        self.EndpointLabel.PositionX = dialogLeftPadding + 10
+        self.EndpointLabel.PositionY = 182
+        self.EndpointLabel.Width = 40
+        self.EndpointLabel.Height = 10
+        self.EndpointLabel.Label = "Endpoint:"
+        self.DialogModel.insertByName("EndpointLabel", self.EndpointLabel)
+
+        self.EndpointField = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlEditModel"
+        )
+        self.EndpointField.Name = "EndpointField"
+        self.EndpointField.PositionX = dialogLeftPadding + 10
+        self.EndpointField.PositionY = 192
+        self.EndpointField.Width = 126
+        self.EndpointField.Height = 12
+        self.EndpointField.Text = direct_endpoint
+        self.EndpointField.Enabled = direct_enabled
+        self.DialogModel.insertByName("EndpointField", self.EndpointField)
+
+        # Text field: Model
+        self.ModelLabel = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedTextModel"
+        )
+        self.ModelLabel.Name = "ModelLabel"
+        self.ModelLabel.PositionX = dialogLeftPadding + 10
+        self.ModelLabel.PositionY = 206
+        self.ModelLabel.Width = 40
+        self.ModelLabel.Height = 10
+        self.ModelLabel.Label = "Model:"
+        self.DialogModel.insertByName("ModelLabel", self.ModelLabel)
+
+        self.ModelField = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlEditModel"
+        )
+        self.ModelField.Name = "ModelField"
+        self.ModelField.PositionX = dialogLeftPadding + 10
+        self.ModelField.PositionY = 216
+        self.ModelField.Width = 126
+        self.ModelField.Height = 12
+        self.ModelField.Text = direct_model
+        self.ModelField.Enabled = direct_enabled
+        self.DialogModel.insertByName("ModelField", self.ModelField)
+
+        # Text field: API Key (optional)
+        self.ApiKeyLabel = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedTextModel"
+        )
+        self.ApiKeyLabel.Name = "ApiKeyLabel"
+        self.ApiKeyLabel.PositionX = dialogLeftPadding + 10
+        self.ApiKeyLabel.PositionY = 230
+        self.ApiKeyLabel.Width = 80
+        self.ApiKeyLabel.Height = 10
+        self.ApiKeyLabel.Label = "API Key (optional):"
+        self.DialogModel.insertByName("ApiKeyLabel", self.ApiKeyLabel)
+
+        self.ApiKeyField = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlEditModel"
+        )
+        self.ApiKeyField.Name = "ApiKeyField"
+        self.ApiKeyField.PositionX = dialogLeftPadding + 10
+        self.ApiKeyField.PositionY = 240
+        self.ApiKeyField.Width = 126
+        self.ApiKeyField.Height = 12
+        self.ApiKeyField.Text = direct_api_key
+        self.ApiKeyField.Enabled = direct_enabled
+        self.DialogModel.insertByName("ApiKeyField", self.ApiKeyField)
+
+        # Add item listeners for manual radio button group management
+        selected_text_control = self.DialogContainer.getControl("SelectedTextOption")
+        entire_doc_control = self.DialogContainer.getControl("EntireDocumentOption")
+        replace_control = self.DialogContainer.getControl("ReplaceOption")
+        append_control = self.DialogContainer.getControl("AppendOption")
+
+        selected_text_control.addItemListener(self)
+        entire_doc_control.addItemListener(self)
+        replace_control.addItemListener(self)
+        append_control.addItemListener(self)
+
+        # Add action listener for checkbox to enable/disable fields
+        checkbox_control = self.DialogContainer.getControl("DirectModelCheckbox")
+        checkbox_control.addItemListener(self)
+
+        # Adjust dialog height to accommodate new controls
+        self.DialogModel.Height = 320
+
     def getHeight(self):
         return self.DialogContainer.Size.Height
 
@@ -98,6 +245,54 @@ class Panel1(Panel1_UI):
     def myFunction(self):
         # TODO: not implemented
         pass
+
+    def itemStateChanged(self, event):
+        """Handle item state changes for checkboxes"""
+        control_name = None
+        try:
+            control_name = event.Source.Model.Name
+        except:
+            pass
+
+        # Handle Direct model access checkbox
+        if control_name == "DirectModelCheckbox":
+            enabled = event.Selected == 1
+            self.EndpointField.Enabled = enabled
+            self.ModelField.Enabled = enabled
+            self.ApiKeyField.Enabled = enabled
+            return
+
+        # Manual checkbox group handling - enforce mutual exclusivity
+        # When checked: uncheck the other in its group
+        # When unchecked: re-check it (prevent having none selected)
+
+        # Input group: SelectedTextOption and EntireDocumentOption
+        if control_name == "SelectedTextOption":
+            if event.Selected == 1:
+                self.EntireDocumentOption.State = 0
+            else:
+                # Prevent unchecking - keep it checked
+                self.SelectedTextOption.State = 1
+        elif control_name == "EntireDocumentOption":
+            if event.Selected == 1:
+                self.SelectedTextOption.State = 0
+            else:
+                # Prevent unchecking - keep it checked
+                self.EntireDocumentOption.State = 1
+
+        # Output group: ReplaceOption and AppendOption
+        elif control_name == "ReplaceOption":
+            if event.Selected == 1:
+                self.AppendOption.State = 0
+            else:
+                # Prevent unchecking - keep it checked
+                self.ReplaceOption.State = 1
+        elif control_name == "AppendOption":
+            if event.Selected == 1:
+                self.ReplaceOption.State = 0
+            else:
+                # Prevent unchecking - keep it checked
+                self.AppendOption.State = 1
 
     # --------- helpers ---------------------
 
@@ -186,52 +381,111 @@ class Panel1(Panel1_UI):
             self.Submit.Enabled = True
 
     def _submit_background(self, inputPrompt: str, docText: str):
+        requestId = None  # Initialize for error handling
+        direct_mode_enabled = False  # Initialize for error handling
+
         try:
-            apiKey = os.environ.get("LT_LLM_API_KEY")
-            self.FreeModel = apiKey is None
+            # Check if direct model access is enabled
+            direct_mode_enabled = self.DirectModelCheckbox.State == 1
 
-            requestId = str(uuid4())
-            request = Request(
-                id=requestId,
-                inputPrompt=inputPrompt,
-                docText=docText,
-                apiKey=apiKey,
-                extensionVersion=self.ExtensionVersion,
-            )
+            if direct_mode_enabled:
+                # Use direct model access (Ollama/LM Studio)
+                endpoint = self.EndpointField.Text.strip()
+                model = self.ModelField.Text.strip()
+                api_key = self.ApiKeyField.Text.strip() or None
 
-            answer = get_answer(request)
-            if not answer.success:
-                raise Exception(answer.message)
+                if not endpoint or not model:
+                    raise Exception("Endpoint and Model fields are required for direct model access")
 
-            self.LatestExtensionVersion = answer.latestExtensionVersion
+                response_text = get_direct_answer(
+                    endpoint=endpoint,
+                    model=model,
+                    api_key=api_key,
+                    prompt=inputPrompt,
+                    doc_text=docText
+                )
 
-            desktop = self.ctx.ServiceManager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", self.ctx
-            )
-            model = desktop.getCurrentComponent()
-            selection = model.CurrentController.getSelection()
-            text_range = selection.getByIndex(0)
-            previous_text = text_range.getString()
-            text_range.setString(previous_text + answer.response)
+                # Insert response into document
+                desktop = self.ctx.ServiceManager.createInstanceWithContext(
+                    "com.sun.star.frame.Desktop", self.ctx
+                )
+                model_doc = desktop.getCurrentComponent()
+                selection = model_doc.CurrentController.getSelection()
+                text_range = selection.getByIndex(0)
 
-            label = "Done."
-            if is_older(self.ExtensionVersion, self.LatestExtensionVersion):
-                label += " New version is out, please update."
+                # Check if Replace or Append mode
+                if self.ReplaceOption.State == 1:
+                    # Replace: just use the response
+                    text_range.setString(response_text)
+                else:
+                    # Append: add response to existing text
+                    previous_text = text_range.getString()
+                    text_range.setString(previous_text + response_text)
 
-            if self.FreeModel:
-                label += " You're using a free model; visit librethinker.com to learn about alternatives."
+                label = "Done."
+                label = wrap_text(input=label, limit=50)
+                self.StatusText.Label = label
+                self.Submit.Enabled = True
 
-            label = wrap_text(input=label, limit=50)
+            else:
+                # Use original librethinker.com API
+                apiKey = os.environ.get("LT_LLM_API_KEY")
+                self.FreeModel = apiKey is None
 
-            self.StatusText.Label = label
-            self.Submit.Enabled = True
+                requestId = str(uuid4())
+                request = Request(
+                    id=requestId,
+                    inputPrompt=inputPrompt,
+                    docText=docText,
+                    apiKey=apiKey,
+                    extensionVersion=self.ExtensionVersion,
+                )
+
+                answer = get_answer(request)
+                if not answer.success:
+                    raise Exception(answer.message)
+
+                self.LatestExtensionVersion = answer.latestExtensionVersion
+
+                desktop = self.ctx.ServiceManager.createInstanceWithContext(
+                    "com.sun.star.frame.Desktop", self.ctx
+                )
+                model_doc = desktop.getCurrentComponent()
+                selection = model_doc.CurrentController.getSelection()
+                text_range = selection.getByIndex(0)
+
+                # Check if Replace or Append mode
+                if self.ReplaceOption.State == 1:
+                    # Replace: just use the response
+                    text_range.setString(answer.response)
+                else:
+                    # Append: add response to existing text
+                    previous_text = text_range.getString()
+                    text_range.setString(previous_text + answer.response)
+
+                label = "Done."
+                if is_older(self.ExtensionVersion, self.LatestExtensionVersion):
+                    label += " New version is out, please update."
+
+                if self.FreeModel:
+                    label += " You're using a free model; visit librethinker.com to learn about alternatives."
+
+                label = wrap_text(input=label, limit=50)
+
+                self.StatusText.Label = label
+                self.Submit.Enabled = True
 
         except Exception as e:
             error = "Error getting answer."
-            if self.FreeModel:
-                error += "\nYou are using the free model which may have issues. Try again later or set up an API key."
 
-            error += f"\nRequest ID: {requestId}.\nDetails: {str(e)}"
+            if direct_mode_enabled:
+                error += f"\n\nUsing direct model access.\nDetails: {str(e)}"
+            else:
+                if hasattr(self, 'FreeModel') and self.FreeModel:
+                    error += "\nYou are using the free model which may have issues. Try again later or set up an API key."
+                if requestId:
+                    error += f"\nRequest ID: {requestId}."
+                error += f"\nDetails: {str(e)}"
 
             self.messageBox(error, "Error", ERRORBOX)
             self.StatusText.Label = ""

@@ -1,1 +1,1 @@
-AI Copilot for LibreOffice Writer. Use a free LLM (no signup required), or bring your OpenAI API key. Generative AI assistant for rephrasing text, summarizing documents, proofreading, and other writing help.
+AI Copilot for LibreOffice Writer with local and cloud model support. Connect to Ollama, LM Studio, or any OpenAI-compatible local server for privacy-focused offline use. Alternatively, use the free cloud model or bring your own OpenAI API key. Generative AI assistant for rephrasing text, summarizing documents, proofreading, and other writing help.
