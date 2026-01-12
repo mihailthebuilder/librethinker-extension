@@ -12,7 +12,8 @@ import os, random, string, threading
 from uuid import uuid4
 from .utils import wrap_text, is_older
 
-from .api import get_answer, Request
+from .api import LtClient
+import traceback
 from com.sun.star.awt.PosSize import POSSIZE
 from com.sun.star.awt.MessageBoxButtons import (
     BUTTONS_OK,
@@ -190,16 +191,11 @@ class Panel1(Panel1_UI):
             apiKey = os.environ.get("LT_LLM_API_KEY")
             self.FreeModel = apiKey is None
 
-            requestId = str(uuid4())
-            request = Request(
-                id=requestId,
-                inputPrompt=inputPrompt,
-                docText=docText,
-                apiKey=apiKey,
-                extensionVersion=self.ExtensionVersion,
+            ltClient = LtClient(extensionVersion=self.ExtensionVersion)
+            answer = ltClient.getAnswer(
+                inputPrompt=inputPrompt, docText=docText, apiKey=apiKey
             )
 
-            answer = get_answer(request)
             if not answer.success:
                 raise Exception(answer.message)
 
@@ -231,7 +227,10 @@ class Panel1(Panel1_UI):
             if self.FreeModel:
                 error += "\nYou are using the free model which may have issues. Try again later or set up an API key."
 
-            error += f"\nRequest ID: {requestId}.\nDetails: {str(e)}"
+            error += f"\nRequest ID: {ltClient.requestId}.\nDetails: {str(e)}"
+
+            # stack_trace = traceback.format_exc()
+            # error += f"\nStack trace:\n{stack_trace}"
 
             self.messageBox(error, "Error", ERRORBOX)
             self.StatusText.Label = ""
