@@ -8,7 +8,7 @@ and edit text without leaving your document.
 
 ## Quickstart
 
-Download the latest extension file (.oxt) from the [LibreOffice extension directory](https://extensions.libreoffice.org/en/extensions/show/99471). Either double-click the .oxt file; or, open LibreOffice Writer, go to *Tools > Extension Manager > Add*, and select the downloaded .oxt file.
+Download the latest extension file (.oxt) from the [LibreOffice extension directory](https://extensions.libreoffice.org/en/extensions/show/99471). Open LibreOffice Writer, go to *Tools > Extension Manager > Add*, and select the downloaded .oxt file to install.
 
 Open the sidebar in LibreOffice; you should see the lightbulb icon for the extension. Click on the icon to open the extension's sidebar panel, then you're ready to go!
 
@@ -25,3 +25,7 @@ Restart LibreOffice. The extension will now use the API key from your environmen
 ## License
 
 See [license.txt](./extension/registration/license.txt) for license.
+
+## More info
+
+Check out the project's site [librethinker.com](https://librethinker.com)
