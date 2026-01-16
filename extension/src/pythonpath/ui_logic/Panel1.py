@@ -199,7 +199,7 @@ class Panel1(Panel1_UI):
 
             ltClient = LtClient(extensionVersion=self.ExtensionVersion)
             answer = ltClient.getAnswer(
-                inputPrompt=inputPrompt, docText=docText, apiKey=apiKey
+                inputPrompt=inputPrompt, docText=docText, apiKey=apiKey, model=model
             )
 
             if not answer.success:

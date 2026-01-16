@@ -46,9 +46,11 @@ class LtClient:
         return self.base_headers.copy()
 
     def getAnswer(
-        self, inputPrompt: str, docText: str, apiKey: Optional[str]
+        self, inputPrompt: str, docText: str, apiKey: Optional[str], model: str
     ) -> Response:
-        jobId = self.initJob(inputPrompt, docText, apiKey)
+        jobId = self.initJob(
+            inputPrompt=inputPrompt, docText=docText, apiKey=apiKey, model=model
+        )
 
         timeout_seconds = 180
         start_time = time.monotonic()
