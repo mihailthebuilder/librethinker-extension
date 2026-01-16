@@ -9,11 +9,9 @@
 
 import uno, tempfile, unohelper
 import os, random, string, threading
-from uuid import uuid4
 from .utils import wrap_text, is_older
 
 from .api import LtClient
-import traceback
 from com.sun.star.awt.PosSize import POSSIZE
 from com.sun.star.awt.MessageBoxButtons import (
     BUTTONS_OK,
@@ -171,7 +169,7 @@ class Panel1(Panel1_UI):
             )
             inputPrompt = self.DialogContainer.getControl("Prompt").getText()
 
-            CHARACTER_LIMIT = 380_000
+            CHARACTER_LIMIT = 130_000
             if len(docText + inputPrompt) > CHARACTER_LIMIT:
                 raise Exception(
                     f"Input text is too long ({len(docText) + len(inputPrompt)} characters).\nPlease reduce the size to under {CHARACTER_LIMIT} characters."
@@ -190,6 +188,14 @@ class Panel1(Panel1_UI):
         try:
             apiKey = os.environ.get("LT_LLM_API_KEY")
             self.FreeModel = apiKey is None
+
+            if not self.FreeModel:
+                try:
+                    model = os.environ["LT_LLM_MODEL"]
+                except Exception:
+                    raise Exception(
+                        "You've set an API key in your environment variable. Please set the model environment variable as well."
+                    )
 
             ltClient = LtClient(extensionVersion=self.ExtensionVersion)
             answer = ltClient.getAnswer(

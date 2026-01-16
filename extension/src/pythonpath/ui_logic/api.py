@@ -11,11 +11,18 @@ import os
 
 
 @dataclass
+class JobResult:
+    latestExtensionVersion: str
+    status: str
+    response: str
+
+
+@dataclass
 class Response:
+    response: str = ""
     latestExtensionVersion: str
     success: bool
-    message: str
-    response: str
+    message: str = ""
 
 
 class LtClient:
@@ -62,12 +69,25 @@ class LtClient:
             delay = min(delay + 2, max_delay)
 
             result = self.getJobResult(jobId)
-            if len(result.response) > 0:
-                return result
+            if result.status == "successful":
+                return Response(
+                    response=result.response,
+                    latestExtensionVersion=result.latestExtensionVersion,
+                    success=True,
+                )
 
-        result.success = False
-        result.message = "Request timed out."
-        return result
+            if result.status == "failed":
+                return Response(
+                    latestExtensionVersion=result.latestExtensionVersion,
+                    success=False,
+                    message="Failed to get response from LLM.",
+                )
+
+        return Response(
+            latestExtensionVersion=result.latestExtensionVersion,
+            success=False,
+            message="LLM took too long to answer.",
+        )
 
     def initJob(self, inputPrompt: str, docText: str, apiKey: Optional[str]) -> str:
         body = json.dumps(
@@ -94,24 +114,25 @@ class LtClient:
 
         return jobId
 
-    def getJobResult(self, jobId: str) -> Response:
-        body = json.dumps({"jobId": jobId, "clientSecret": self.clientSecret}).encode(
+    def getJobResult(self, jobId: str) -> JobResult:
+        data = json.dumps({"jobId": jobId, "clientSecret": self.clientSecret}).encode(
             "utf-8"
         )
 
         jobResultReq = urllib.request.Request(
             self.baseUrl + "fetch",
             method="POST",
-            data=body,
+            data=data,
             headers=self.getBaseHeaders(),
         )
 
         with urllib.request.urlopen(jobResultReq, timeout=30) as res:
-            response = Response(
+            data = json.loads(res.read().decode("utf-8"))
+
+            response = JobResult(
                 latestExtensionVersion=res.headers["Client-Version-Latest"],
-                success=True,
-                response=json.loads(res.read().decode("utf-8"))["response"],
-                message="",
+                status=data["status"],
+                response=data["response"],
             )
 
         return response
