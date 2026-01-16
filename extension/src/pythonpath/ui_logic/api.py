@@ -19,9 +19,9 @@ class JobResult:
 
 @dataclass
 class Response:
-    response: str = ""
     latestExtensionVersion: str
     success: bool
+    response: str = ""
     message: str = ""
 
 
