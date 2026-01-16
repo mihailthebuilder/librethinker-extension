@@ -91,9 +91,16 @@ class LtClient:
             message="LLM took too long to answer.",
         )
 
-    def initJob(self, inputPrompt: str, docText: str, apiKey: Optional[str]) -> str:
+    def initJob(
+        self, inputPrompt: str, docText: str, apiKey: Optional[str], model: str
+    ) -> str:
         body = json.dumps(
-            {"prompt": inputPrompt, "text": docText, "clientSecret": self.clientSecret}
+            {
+                "prompt": inputPrompt,
+                "text": docText,
+                "clientSecret": self.clientSecret,
+                "model": model,
+            }
         ).encode("utf-8")
 
         headers = self.getBaseHeaders()
