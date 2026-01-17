@@ -169,7 +169,7 @@ class Panel1(Panel1_UI):
             )
             inputPrompt = self.DialogContainer.getControl("Prompt").getText()
 
-            CHARACTER_LIMIT = 130_000
+            CHARACTER_LIMIT = 110_000
             if len(docText + inputPrompt) > CHARACTER_LIMIT:
                 raise Exception(
                     f"Input text is too long ({len(docText) + len(inputPrompt)} characters).\nPlease reduce the size to under {CHARACTER_LIMIT} characters."
