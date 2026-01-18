@@ -15,6 +15,7 @@ class JobResult:
     latestExtensionVersion: str
     status: str
     response: str
+    statusInfo: str
 
 
 @dataclass
@@ -79,10 +80,14 @@ class LtClient:
                 )
 
             if result.status == "failed":
+                message = "Failed to get response from LLM."
+                if len(result.statusInfo) > 0:
+                    message += " " + result.statusInfo
+
                 return Response(
                     latestExtensionVersion=result.latestExtensionVersion,
                     success=False,
-                    message="Failed to get response from LLM.",
+                    message=message,
                 )
 
         return Response(
@@ -142,6 +147,7 @@ class LtClient:
                 latestExtensionVersion=res.headers["Client-Version-Latest"],
                 status=data["status"],
                 response=data["response"],
+                statusInfo=data["statusInfo"],
             )
 
         return response
