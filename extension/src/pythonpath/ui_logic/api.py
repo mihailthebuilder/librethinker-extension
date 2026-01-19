@@ -47,7 +47,11 @@ class LtClient:
         return self.base_headers.copy()
 
     def getAnswer(
-        self, inputPrompt: str, docText: str, apiKey: Optional[str], model: str
+        self,
+        inputPrompt: str,
+        docText: str,
+        apiKey: Optional[str],
+        model: Optional[str],
     ) -> Response:
         jobId = self.initJob(
             inputPrompt=inputPrompt, docText=docText, apiKey=apiKey, model=model
@@ -97,7 +101,11 @@ class LtClient:
         )
 
     def initJob(
-        self, inputPrompt: str, docText: str, apiKey: Optional[str], model: str
+        self,
+        inputPrompt: str,
+        docText: str,
+        apiKey: Optional[str],
+        model: Optional[str],
     ) -> str:
         body = json.dumps(
             {

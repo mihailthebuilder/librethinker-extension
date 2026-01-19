@@ -85,7 +85,7 @@ class Panel1(Panel1_UI):
         # get document
         self.document = desktop.getCurrentComponent()
 
-        self.ExtensionVersion = "0.2.3"
+        self.ExtensionVersion = "0.2.4"
 
     def getHeight(self):
         return self.DialogContainer.Size.Height
@@ -188,6 +188,7 @@ class Panel1(Panel1_UI):
         try:
             apiKey = os.environ.get("LT_LLM_API_KEY")
             self.FreeModel = apiKey is None
+            model = None
 
             if not self.FreeModel:
                 try:
