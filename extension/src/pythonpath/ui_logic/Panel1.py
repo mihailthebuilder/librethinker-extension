@@ -9,7 +9,7 @@
 
 import uno, tempfile, unohelper
 import os, random, string, threading
-from .utils import wrap_text, is_older
+from .utils import is_older
 
 from .api import LtClient
 from com.sun.star.awt.PosSize import POSSIZE
@@ -223,8 +223,6 @@ class Panel1(Panel1_UI):
 
             if self.FreeModel:
                 label += " You're using a free model; visit librethinker.com to learn about alternatives."
-
-            label = wrap_text(input=label, limit=50)
 
             self.StatusText.Label = label
             self.Submit.Enabled = True

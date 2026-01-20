@@ -134,6 +134,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.StatusText.Width = 136
         self.StatusText.Height = 50
         self.StatusText.Label = ""
+        self.StatusText.MultiLine = True
 
         self.DialogModel.insertByName("StatusText", self.StatusText)
 
