@@ -132,7 +132,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.StatusText.PositionX = dialogLeftPadding
         self.StatusText.PositionY = "148"
         self.StatusText.Width = 136
-        self.StatusText.Height = 20
+        self.StatusText.Height = 30
         self.StatusText.Label = ""
         self.StatusText.MultiLine = True
 
@@ -144,7 +144,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.Support.Name = "Support"
         self.Support.Enabled = True
         self.Support.PositionX = dialogLeftPadding
-        self.Support.PositionY = "168"
+        self.Support.PositionY = "178"
         self.Support.Width = 136
         self.Support.Height = 10
         self.Support.Label = "Click here for support"
@@ -157,7 +157,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         )
         self.FeedbackPrompt.Name = "FeedbackPrompt"
         self.FeedbackPrompt.PositionX = dialogLeftPadding
-        self.FeedbackPrompt.PositionY = "183"
+        self.FeedbackPrompt.PositionY = "193"
         self.FeedbackPrompt.Width = 136
         self.FeedbackPrompt.Height = 30
         self.FeedbackPrompt.Label = "If you like this extension, please leave a review on the LibreOffice extensions repository! It'll motivate me to keep working on it."
