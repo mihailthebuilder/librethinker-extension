@@ -159,6 +159,9 @@ class Panel1(Panel1_UI):
 
     def Submit_OnClick(self):
         try:
+            if self.Submit.Enabled is False:
+                return
+
             self.StatusText.Label = "Loading..."
             self.Submit.Enabled = False
 
