@@ -47,7 +47,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.DialogModel.PositionX = "204"
         self.DialogModel.PositionY = "117"
         self.DialogModel.Width = 156
-        self.DialogModel.Height = 180
+        self.DialogModel.Height = 260
         self.DialogModel.Closeable = True
         self.DialogModel.Moveable = True
 
@@ -132,11 +132,38 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.StatusText.PositionX = dialogLeftPadding
         self.StatusText.PositionY = "148"
         self.StatusText.Width = 136
-        self.StatusText.Height = 50
+        self.StatusText.Height = 20
         self.StatusText.Label = ""
         self.StatusText.MultiLine = True
 
         self.DialogModel.insertByName("StatusText", self.StatusText)
+
+        self.Support = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedHyperlinkModel"
+        )
+        self.Support.Name = "Support"
+        self.Support.Enabled = True
+        self.Support.PositionX = dialogLeftPadding
+        self.Support.PositionY = "168"
+        self.Support.Width = 136
+        self.Support.Height = 10
+        self.Support.Label = "Click here for support"
+        self.Support.URL = "https://tally.so/r/jaZx41"
+
+        self.DialogModel.insertByName("Support", self.Support)
+
+        self.FeedbackPrompt = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedTextModel"
+        )
+        self.FeedbackPrompt.Name = "FeedbackPrompt"
+        self.FeedbackPrompt.PositionX = dialogLeftPadding
+        self.FeedbackPrompt.PositionY = "183"
+        self.FeedbackPrompt.Width = 136
+        self.FeedbackPrompt.Height = 30
+        self.FeedbackPrompt.Label = "If you like this extension, please leave a review on the LibreOffice extensions repository! It'll motivate me to keep working on it."
+        self.FeedbackPrompt.MultiLine = True
+
+        self.DialogModel.insertByName("FeedbackPrompt", self.FeedbackPrompt)
 
         # add the window listener
         self.DialogContainer.addWindowListener(self)
