@@ -11,6 +11,9 @@ import uno, tempfile, unohelper
 import os, random, string, threading
 from .utils import is_older
 
+from .settings import Settings
+import traceback
+
 from .api import LtClient
 from com.sun.star.awt.PosSize import POSSIZE
 from com.sun.star.awt.MessageBoxButtons import (
@@ -75,17 +78,27 @@ class Panel1(Panel1_UI):
         self, ctx=uno.getComponentContext(), dialog=None, **kwargs
     ):  # (self, panelWin, context=uno.getComponentContext()):
 
-        self.ctx = ctx
-        self.dialog = dialog
+        try:
+            self.ctx = ctx
+            self.dialog = dialog
 
-        Panel1_UI.__init__(self, ctx=self.ctx, dialog=self.dialog)
+            self.settings = Settings(ctx)
+            Panel1_UI.__init__(
+                self, ctx=self.ctx, dialog=self.dialog, settings=self.settings
+            )
 
-        # get desktop
-        desktop = ctx.getByName("/singletons/com.sun.star.frame.theDesktop")
-        # get document
-        self.document = desktop.getCurrentComponent()
+            # get desktop
+            desktop = ctx.getByName("/singletons/com.sun.star.frame.theDesktop")
+            # get document
+            self.document = desktop.getCurrentComponent()
 
-        self.ExtensionVersion = "0.2.5"
+            self.ExtensionVersion = "0.2.5"
+        except Exception as e:
+            self.messageBox(
+                f"Error initializing panel: {str(traceback.format_exc())}",
+                "Error",
+                ERRORBOX,
+            )
 
     def getHeight(self):
         return self.DialogContainer.Size.Height
@@ -178,8 +191,22 @@ class Panel1(Panel1_UI):
                     f"Input text is too long ({len(docText) + len(inputPrompt)} characters).\nPlease reduce the size to under {CHARACTER_LIMIT} characters."
                 )
 
+            modelFromEnv = os.environ.get("LT_LLM_MODEL")
+            modelFromInput = self.DialogContainer.getControl("ModelId").getText()
+            model = modelFromInput if len(modelFromInput) > 0 else modelFromEnv
+
+            apiKeyFromEnv = os.environ.get("LT_LLM_API_KEY")
+            apiKeyFromInput = self.DialogContainer.getControl("ModelApiKey").getText()
+            apiKey = apiKeyFromInput if len(apiKeyFromInput) > 0 else apiKeyFromEnv
+
+            if model is not None and apiKey is None:
+                raise Exception(
+                    "Model ID is provided but API key is missing. Please provide an API key."
+                )
+
             threading.Thread(
-                target=self._submit_background, args=(inputPrompt, docText)
+                target=self._submit_background,
+                args=(inputPrompt, docText, model, apiKey),
             ).start()
 
         except Exception as e:
@@ -187,19 +214,11 @@ class Panel1(Panel1_UI):
             self.StatusText.Label = ""
             self.Submit.Enabled = True
 
-    def _submit_background(self, inputPrompt: str, docText: str):
+    def _submit_background(
+        self, inputPrompt: str, docText: str, model: str | None, apiKey: str | None
+    ):
         try:
-            apiKey = os.environ.get("LT_LLM_API_KEY")
-            self.FreeModel = apiKey is None
-            model = None
-
-            if not self.FreeModel:
-                try:
-                    model = os.environ["LT_LLM_MODEL"]
-                except Exception:
-                    raise Exception(
-                        "You've set an API key in your environment variable. Please set the model environment variable as well."
-                    )
+            freeModel = apiKey is None and model is None
 
             ltClient = LtClient(extensionVersion=self.ExtensionVersion)
             answer = ltClient.getAnswer(
@@ -214,8 +233,8 @@ class Panel1(Panel1_UI):
             desktop = self.ctx.ServiceManager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", self.ctx
             )
-            model = desktop.getCurrentComponent()
-            selection = model.CurrentController.getSelection()
+            currentComponent = desktop.getCurrentComponent()
+            selection = currentComponent.CurrentController.getSelection()
             text_range = selection.getByIndex(0)
             previous_text = text_range.getString()
             text_range.setString(previous_text + answer.response)
@@ -224,15 +243,17 @@ class Panel1(Panel1_UI):
             if is_older(self.ExtensionVersion, self.LatestExtensionVersion):
                 label += " New version is out, please update."
 
-            if self.FreeModel:
+            if freeModel:
                 label += " You're using a free model; visit librethinker.com to learn about alternatives."
+            else:
+                label += f" Generated with model {model}."
 
             self.StatusText.Label = label
             self.Submit.Enabled = True
 
         except Exception as e:
             error = "Error getting answer."
-            if self.FreeModel:
+            if freeModel:
                 error += "\nYou are using the free model which may have issues. Try again later or set up an API key."
 
             error += f"\nRequest ID: {ltClient.requestId}.\nDetails: {str(e)}"
@@ -243,6 +264,26 @@ class Panel1(Panel1_UI):
             self.messageBox(error, "Error", ERRORBOX)
             self.StatusText.Label = ""
             self.Submit.Enabled = True
+
+    def SaveSettings_OnClick(self):
+        try:
+            if self.SaveSettings.Enabled is False:
+                return
+
+            self.SaveSettingsStatus.Label = "Saving..."
+            self.SaveSettings.Enabled = False
+
+            model = self.DialogContainer.getControl("ModelId").getText()
+            apiKey = self.DialogContainer.getControl("ModelApiKey").getText()
+            self.settings.save(modelId=model, apiKey=apiKey)
+
+            self.SaveSettingsStatus.Label = "Saved."
+
+        except Exception as e:
+            self.messageBox(f"Error saving settings: {str(e)}", "Error", ERRORBOX)
+            self.SaveSettingsStatus.Label = ""
+        finally:
+            self.SaveSettings.Enabled = True
 
     # -----------------------------------------------------------
     #               Window (dialog/panel) events
