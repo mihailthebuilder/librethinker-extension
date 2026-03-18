@@ -223,7 +223,7 @@ class Panel1(Panel1_UI):
             self.Submit.Enabled = True
 
     def server_response(self, inputPrompt: str, docText: str, model: str) -> Response:
-        extensionVersion = "0.2.8"
+        extensionVersion = "0.2.9"
 
         apiKey: str = self.DialogContainer.getControl("ModelApiKey").getText()
 
