@@ -28,6 +28,9 @@ The extension will now use the LLM vendor's API, with your key, to generate the 
 
 In the BYOK/Ollama Settings, set the model ID as `sh/ollama/{ollamaModelYouWant}` ; for example, `sh/ollama/gemma3:1b` to use the `gemma3:1b` Ollama model.
 
+If using Ollama locally, enter "http://localhost:11434" as the ollama url. 
+If using Ollama from a remote host, enter "http://{remoteHost}:11434" as the ollama url. 
+
 ## License
 
 See [license.txt](./extension/registration/license.txt) for license.
