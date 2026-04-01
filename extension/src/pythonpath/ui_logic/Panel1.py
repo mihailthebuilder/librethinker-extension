@@ -198,11 +198,11 @@ class Panel1(Panel1_UI):
             inputPrompt = self.DialogContainer.getControl("Prompt").getText()
 
             model: str = self.DialogContainer.getControl("ModelId").getText()
-
+            modelUrl: str = self.DialogContainer.getControl("ModelUrl").getText()
             response = (
                 self.server_response(inputPrompt, docText, model)
                 if not is_ollama(model)
-                else self.ollama_response(inputPrompt, docText, ollama_model(model))
+                else self.ollama_response(inputPrompt, docText, ollama_model(model), modelUrl)
             )
 
             desktop = self.ctx.ServiceManager.createInstanceWithContext(
@@ -256,9 +256,9 @@ class Panel1(Panel1_UI):
 
         return Response(answer=answer.response, label=label)
 
-    def ollama_response(self, userPrompt: str, text: str, model: str) -> Response:
+    def ollama_response(self, userPrompt: str, text: str, model: str, modelUrl: str) -> Response:
         client = OllamaClient()
-        answer = client.getAnswer(userPrompt=userPrompt, text=text, model=model)
+        answer = client.getAnswer(userPrompt=userPrompt, text=text, model=model, modelUrl=modelUrl)
         if not answer.success:
             error_message = (
                 f"Error getting response from Ollama.\nDetails: {str(answer.message)}"
@@ -277,7 +277,9 @@ class Panel1(Panel1_UI):
 
             model = self.DialogContainer.getControl("ModelId").getText()
             apiKey = self.DialogContainer.getControl("ModelApiKey").getText()
-            self.settings.save(modelId=model, apiKey=apiKey)
+            modelUrl = self.DialogContainer.getControl("ModelUrl").getText()
+
+            self.settings.save(modelId=model, apiKey=apiKey, modelUrl=modelUrl)
 
             self.SaveSettingsStatus.Label = "Saved."
 

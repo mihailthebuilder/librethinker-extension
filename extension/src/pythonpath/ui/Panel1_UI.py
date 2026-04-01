@@ -212,12 +212,39 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("ModelId", self.ModelId)
 
+        ###################################################################################
+                # ----- Model URL Label -----
+        self.ModelUrlLabel = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedTextModel"
+        )
+        self.ModelUrlLabel.Name = "ModelUrlLabel"
+        self.ModelUrlLabel.PositionX = dialogLeftPadding
+        self.ModelUrlLabel.PositionY = self.ModelId.PositionY + 20  # 20 px below the ID label
+        self.ModelUrlLabel.Width = 136
+        self.ModelUrlLabel.Height = 10
+        self.ModelUrlLabel.Label = "Model URL (Ollama only! e.g. https://localhost:11434)"
+        self.ModelUrlLabel.MultiLine = True
+        #inserts the control model into the dialog model
+        self.DialogModel.insertByName("ModelUrlLabel", self.ModelUrlLabel)
+        self.ModelUrl = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlEditModel"
+        )
+        self.ModelUrl.Name = "ModelUrl"
+        self.ModelUrl.TabIndex = self.Support.TabIndex + 1
+        self.ModelUrl.PositionX = dialogLeftPadding
+        self.ModelUrl.PositionY = self.ModelUrlLabel.PositionY + 10
+        self.ModelUrl.Width = 136
+        self.ModelUrl.Height = 15
+        self.ModelUrl.Text = self.settings.modelUrl
+        # inserts the control model into the dialog model
+        self.DialogModel.insertByName("ModelUrl", self.ModelUrl)
+
         self.ModelApiKeyLabel = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
         self.ModelApiKeyLabel.Name = "ModelApiKeyLabel"
         self.ModelApiKeyLabel.PositionX = dialogLeftPadding
-        self.ModelApiKeyLabel.PositionY = self.ModelId.PositionY + 20
+        self.ModelApiKeyLabel.PositionY = self.ModelUrl.PositionY + 20
         self.ModelApiKeyLabel.Width = 136
         self.ModelApiKeyLabel.Height = 10
         self.ModelApiKeyLabel.Label = "Model API key"

@@ -183,7 +183,7 @@ class LtClient:
 
 
 class OllamaClient:
-    def getAnswer(self, userPrompt: str, text: str, model: str) -> OllamaClientResponse:
+    def getAnswer(self, userPrompt: str, text: str, model: str, modelUrl) -> OllamaClientResponse:
         try:
             body = json.dumps(
                 {
@@ -202,12 +202,19 @@ class OllamaClient:
                 }
             ).encode("utf-8")
 
+#            req = urllib.request.Request(
+#                "http://192.168.1.95:11434/api/chat",
+#                data=body,
+#                method="POST",
+#                headers={"Content-Type": "application/json"},
+#            )
+            # Use an arbitrary address if provided; defaults to the local address
+            chat_endpoint = getattr(self, "chat_endpoint", modelUrl+"/api/chat")
             req = urllib.request.Request(
-                "http://localhost:11434/api/chat",
+                chat_endpoint,
                 data=body,
                 method="POST",
-                headers={"Content-Type": "application/json"},
-            )
+                headers={"Content-Type": "application/json"},)
 
             with urllib.request.urlopen(req) as response:
                 data = json.loads(response.read().decode("utf-8"))

@@ -12,3 +12,4 @@ def is_ollama(model: str) -> bool:
 
 def ollama_model(model: str) -> str:
     return model[len("sh/ollama/") :]
+    
