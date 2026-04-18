@@ -28,6 +28,13 @@ The extension will now use the LLM vendor's API, with your key, to generate the 
 
 In the BYOK/Ollama Settings, set the model ID as `sh/ollama/{ollamaModelYouWant}` ; for example, `sh/ollama/gemma3:1b` to use the `gemma3:1b` Ollama model.
 
+By default, the extension sends the request to `http://localhost:11434/api/chat`. You can change the URL by
+setting a value in the `Model URL` input.
+
+Values in the `Model API key` will be passed in the `Authorization: Bearer $API_KEY` header. This is useful
+if you're self-hosting on a remote machine, and you want to verify requests to that endpoint before
+processing them.
+
 ## License
 
 See [license.txt](./extension/registration/license.txt) for license.

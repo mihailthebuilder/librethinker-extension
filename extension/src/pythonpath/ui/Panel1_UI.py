@@ -51,7 +51,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.DialogModel.PositionX = "204"
         self.DialogModel.PositionY = "117"
         self.DialogModel.Width = 156
-        self.DialogModel.Height = 360
+        self.DialogModel.Height = 400
         self.DialogModel.Closeable = True
         self.DialogModel.Moveable = True
 
@@ -209,15 +209,40 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.ModelId.Height = 15
         self.ModelId.Text = self.settings.modelId
 
-        # inserts the control model into the dialog model
         self.DialogModel.insertByName("ModelId", self.ModelId)
+
+        self.ModelUrlLabel = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedTextModel"
+        )
+        self.ModelUrlLabel.Name = "ModelUrlLabel"
+        self.ModelUrlLabel.PositionX = dialogLeftPadding
+        self.ModelUrlLabel.PositionY = self.ModelId.PositionY + 20
+        self.ModelUrlLabel.Width = 136
+        self.ModelUrlLabel.Height = 10
+        self.ModelUrlLabel.Label = "Model URL"
+
+        self.DialogModel.insertByName("ModelUrlLabel", self.ModelUrlLabel)
+
+        self.ModelUrl = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlEditModel"
+        )
+
+        self.ModelUrl.Name = "ModelUrl"
+        self.ModelUrl.TabIndex = self.ModelId.TabIndex + 1
+        self.ModelUrl.PositionX = dialogLeftPadding
+        self.ModelUrl.PositionY = self.ModelUrlLabel.PositionY + 10
+        self.ModelUrl.Width = 136
+        self.ModelUrl.Height = 15
+        self.ModelUrl.Text = self.settings.modelUrl
+
+        self.DialogModel.insertByName("ModelUrl", self.ModelUrl)
 
         self.ModelApiKeyLabel = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
         self.ModelApiKeyLabel.Name = "ModelApiKeyLabel"
         self.ModelApiKeyLabel.PositionX = dialogLeftPadding
-        self.ModelApiKeyLabel.PositionY = self.ModelId.PositionY + 20
+        self.ModelApiKeyLabel.PositionY = self.ModelUrl.PositionY + 20
         self.ModelApiKeyLabel.Width = 136
         self.ModelApiKeyLabel.Height = 10
         self.ModelApiKeyLabel.Label = "Model API key"

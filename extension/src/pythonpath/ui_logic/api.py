@@ -183,7 +183,9 @@ class LtClient:
 
 
 class OllamaClient:
-    def getAnswer(self, userPrompt: str, text: str, model: str) -> OllamaClientResponse:
+    def getAnswer(
+        self, userPrompt: str, text: str, model: str, modelUrl: str, apiKey: str
+    ) -> OllamaClientResponse:
         try:
             body = json.dumps(
                 {
@@ -202,11 +204,17 @@ class OllamaClient:
                 }
             ).encode("utf-8")
 
+            url = modelUrl if len(modelUrl) > 0 else "http://localhost:11434/api/chat"
+
+            headers = {"Content-Type": "application/json"}
+            if len(apiKey) > 0:
+                headers["Authorization"] = f"Bearer {apiKey}"
+
             req = urllib.request.Request(
-                "http://localhost:11434/api/chat",
+                url,
                 data=body,
                 method="POST",
-                headers={"Content-Type": "application/json"},
+                headers=headers,
             )
 
             with urllib.request.urlopen(req) as response:

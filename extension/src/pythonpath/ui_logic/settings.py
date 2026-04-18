@@ -14,6 +14,7 @@ class Settings:
 
         self.modelId = data.get("modelId", "")
         self.apiKey = data.get("apiKey", "")
+        self.modelUrl = data.get("modelUrl", "")
 
     @staticmethod
     def getSettingsFilePath(ctx) -> Path:
@@ -22,10 +23,7 @@ class Settings:
         user_config_path = Path(uno.fileUrlToSystemPath(user_config_url))
         return user_config_path / "LibreThinkerConfig.json"
 
-    def save(self, modelId: str, apiKey: str):
-        data = {
-            "modelId": modelId,
-            "apiKey": apiKey,
-        }
+    def save(self, modelId: str, apiKey: str, modelUrl: str):
+        data = {"modelId": modelId, "apiKey": apiKey, "modelUrl": modelUrl}
         with open(self.settingsFilePath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
