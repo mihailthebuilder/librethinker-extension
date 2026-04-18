@@ -4,7 +4,7 @@ LibreThinker is a LibreOffice Writer extension that brings AI-assisted text
 editing directly into your sidebar. It integrates an LLM to help you rewrite, improve, 
 and edit text without leaving your document.
 
-You can use a free online LLM (no signup required), locally self-hosted Ollama, or bring your API key (ChatGPT/OpenAI, Mistral, Groq, etc).
+You can use a free online LLM (no signup required), self-hosted Ollama, or bring your API key (ChatGPT/OpenAI, Mistral, Groq, etc).
 
 ![Screenshot](./screenshot.png)
 
