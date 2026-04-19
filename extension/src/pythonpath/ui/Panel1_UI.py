@@ -55,7 +55,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.DialogModel.Closeable = True
         self.DialogModel.Moveable = True
 
-        dialogLeftPadding = "6"
+        dialogLeftPadding = 6
 
         # --------- create an instance of Edit control, set properties ---
         self.Prompt = self.DialogModel.createInstance(
@@ -134,7 +134,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         )
         self.StatusText.Name = "StatusText"
         self.StatusText.PositionX = dialogLeftPadding
-        self.StatusText.PositionY = "148"
+        self.StatusText.PositionY = 148
         self.StatusText.Width = 136
         self.StatusText.Height = 30
         self.StatusText.Label = ""
@@ -142,42 +142,56 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         self.DialogModel.insertByName("StatusText", self.StatusText)
 
-        self.Support = self.DialogModel.createInstance(
-            "com.sun.star.awt.UnoControlFixedHyperlinkModel"
-        )
-        self.Support.Name = "Support"
-        self.Support.Enabled = True
-        self.Support.PositionX = dialogLeftPadding
-        self.Support.PositionY = "178"
-        self.Support.TabIndex = self.EntireDocumentOption.TabIndex + 1
-        self.Support.Width = 136
-        self.Support.Height = 10
-        self.Support.Label = "Click here for support"
-        self.Support.URL = "https://tally.so/r/jaZx41"
-
-        self.DialogModel.insertByName("Support", self.Support)
-
-        self.FeedbackPrompt = self.DialogModel.createInstance(
+        self.LinksSectionHeading = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
-        self.FeedbackPrompt.Name = "FeedbackPrompt"
-        self.FeedbackPrompt.PositionX = dialogLeftPadding
-        self.FeedbackPrompt.PositionY = 193
-        self.FeedbackPrompt.Width = 136
-        self.FeedbackPrompt.Height = 30
-        self.FeedbackPrompt.Label = "If you like this extension, please leave a review on the LibreOffice extensions repository! It'll motivate me to keep working on it."
-        self.FeedbackPrompt.MultiLine = True
+        self.LinksSectionHeading.Name = "LinksSectionHeading"
+        self.LinksSectionHeading.PositionX = dialogLeftPadding
+        self.LinksSectionHeading.PositionY = self.StatusText.PositionY + 30
+        self.LinksSectionHeading.Width = 136
+        self.LinksSectionHeading.Height = 10
+        self.LinksSectionHeading.Label = "--LINKS--"
 
-        self.DialogModel.insertByName("FeedbackPrompt", self.FeedbackPrompt)
+        self.DialogModel.insertByName("LinksSectionHeading", self.LinksSectionHeading)
+
+        self.GetHelp = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedHyperlinkModel"
+        )
+        self.GetHelp.Name = "GetHelp"
+        self.GetHelp.Enabled = True
+        self.GetHelp.PositionX = dialogLeftPadding
+        self.GetHelp.PositionY = self.LinksSectionHeading.PositionY + 15
+        self.GetHelp.TabIndex = self.EntireDocumentOption.TabIndex + 1
+        self.GetHelp.Width = 30
+        self.GetHelp.Height = 10
+        self.GetHelp.Label = "Get Help"
+        self.GetHelp.URL = "https://tally.so/r/jaZx41"
+
+        self.DialogModel.insertByName("GetHelp", self.GetHelp)
+
+        self.BuyMeCoffee = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedHyperlinkModel"
+        )
+        self.BuyMeCoffee.Name = "BuyMeCoffee"
+        self.BuyMeCoffee.Enabled = True
+        self.BuyMeCoffee.PositionX = dialogLeftPadding + 30
+        self.BuyMeCoffee.PositionY = self.LinksSectionHeading.PositionY + 15
+        self.BuyMeCoffee.TabIndex = self.GetHelp.TabIndex + 1
+        self.BuyMeCoffee.Width = 45
+        self.BuyMeCoffee.Height = 10
+        self.BuyMeCoffee.Label = "Buy Me A Coffee"
+        self.BuyMeCoffee.URL = "https://ko-fi.com/mihailmarian"
+
+        self.DialogModel.insertByName("BuyMeCoffee", self.BuyMeCoffee)
 
         self.SettingsSectionHeading = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
         self.SettingsSectionHeading.Name = "SettingsSectionHeading"
         self.SettingsSectionHeading.PositionX = dialogLeftPadding
-        self.SettingsSectionHeading.PositionY = self.FeedbackPrompt.PositionY + 40
+        self.SettingsSectionHeading.PositionY = self.GetHelp.PositionY + 20
         self.SettingsSectionHeading.Width = 136
-        self.SettingsSectionHeading.Height = 15
+        self.SettingsSectionHeading.Height = 10
         self.SettingsSectionHeading.Label = "--BYOK/OLLAMA SETTINGS--"
 
         self.DialogModel.insertByName(
@@ -189,7 +203,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         )
         self.ModelIdLabel.Name = "ModelIdLabel"
         self.ModelIdLabel.PositionX = dialogLeftPadding
-        self.ModelIdLabel.PositionY = self.SettingsSectionHeading.PositionY + 20
+        self.ModelIdLabel.PositionY = self.SettingsSectionHeading.PositionY + 15
         self.ModelIdLabel.Width = 136
         self.ModelIdLabel.Height = 10
         self.ModelIdLabel.Label = "Model ID (e.g. claude-opus-4-6)"
@@ -202,7 +216,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         )
 
         self.ModelId.Name = "ModelId"
-        self.ModelId.TabIndex = self.Support.TabIndex + 1
+        self.ModelId.TabIndex = self.BuyMeCoffee.TabIndex + 1
         self.ModelId.PositionX = dialogLeftPadding
         self.ModelId.PositionY = self.ModelIdLabel.PositionY + 10
         self.ModelId.Width = 136
