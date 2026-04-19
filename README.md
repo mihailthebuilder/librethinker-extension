@@ -35,6 +35,10 @@ Values in the `Model API key` will be passed in the `Authorization: Bearer $API_
 if you're self-hosting on a remote machine, and you want to verify requests to that endpoint before
 processing them.
 
+## Buy me a coffee
+
+You can leave a tip at https://ko-fi.com/mihailmarian to support my work.
+
 ## License
 
 See [license.txt](./extension/registration/license.txt) for license.
