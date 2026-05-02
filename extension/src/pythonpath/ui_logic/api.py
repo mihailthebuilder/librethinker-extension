@@ -2,7 +2,6 @@ import urllib.request
 import json
 import platform
 from dataclasses import dataclass
-from typing import Optional
 import random
 import time
 import uuid
@@ -66,15 +65,17 @@ class LtClient:
                 f"Input text is too long ({len(docText) + len(inputPrompt)} characters).\nPlease reduce the size to under {CHARACTER_LIMIT} characters."
             )
 
-        if len(model) > 0 and len(apiKey) == 0:
-            raise Exception(
-                "Model ID is provided but API key is missing. Please provide an API key."
-            )
+        if len(model) > 0:
+            if not (len(apiKey) > 5 and len(apiKey) <= 255):
+                raise Exception(
+                    f"Model ID is provided but API key has invalid value {apiKey}."
+                )
 
-        if len(apiKey) > 0 and len(model) == 0:
-            raise Exception(
-                "API key is provided but Model ID is missing. Please provide a Model ID."
-            )
+        if len(apiKey) > 0:
+            if not (len(model) >= 5 and len(model) <= 100):
+                raise Exception(
+                    f"API key is provided but Model ID has invalid value {model}."
+                )
 
         jobId = self.initJob(
             inputPrompt=inputPrompt, docText=docText, apiKey=apiKey, model=model
