@@ -214,8 +214,7 @@ class Panel1(Panel1_UI):
             currentComponent = desktop.getCurrentComponent()
             selection = currentComponent.CurrentController.getSelection()
             text_range = selection.getByIndex(0)
-            previous_text = text_range.getString()
-            text_range.setString(previous_text + response.answer)
+            text_range.setString(response.answer)
 
             self.StatusText.Label = response.label
 
@@ -228,7 +227,7 @@ class Panel1(Panel1_UI):
     def server_response(
         self, inputPrompt: str, docText: str, model: str, apiKey: str
     ) -> Response:
-        extensionVersion = "0.2.11"
+        extensionVersion = "0.2.12"
 
         client = LtClient(extensionVersion=extensionVersion)
         answer = client.getAnswer(
