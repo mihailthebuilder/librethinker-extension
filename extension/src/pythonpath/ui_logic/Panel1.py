@@ -178,20 +178,26 @@ class Panel1(Panel1_UI):
         return text_range.getString()
 
     def Submit_OnClick(self):
-        if self.Submit.Enabled is False:
-            return
+        try:
+            if self.Submit.Enabled is False:
+                return
 
-        # Needs to be here as get_all_txt() refreshes the Submit button state
-        docText = (
-            self.get_all_txt()
-            if self.EntireDocumentOption.State
-            else self.get_selected_txt()
-        )
+            # Needs to be here as get_all_txt() refreshes the Submit button state
+            docText = (
+                self.get_all_txt()
+                if self.EntireDocumentOption.State
+                else self.get_selected_txt()
+            )
 
-        self.Submit.Enabled = False
-        self.StatusText.Label = "Loading..."
+            self.Submit.Enabled = False
+            self.StatusText.Label = "Loading..."
 
-        threading.Thread(target=self.submit_background, args=(docText,)).start()
+            threading.Thread(target=self.submit_background, args=(docText,)).start()
+
+        except Exception as e:
+            self.messageBox(str(e), "Error", ERRORBOX)
+            self.Submit.Enabled = True
+            self.StatusText.Label = ""
 
     def submit_background(self, docText: str):
         try:
