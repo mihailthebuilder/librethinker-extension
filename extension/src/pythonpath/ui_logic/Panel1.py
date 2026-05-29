@@ -233,7 +233,7 @@ class Panel1(Panel1_UI):
     def server_response(
         self, inputPrompt: str, docText: str, model: str, apiKey: str
     ) -> Response:
-        extensionVersion = "0.2.13"
+        extensionVersion = "0.2.14"
 
         client = LtClient(extensionVersion=extensionVersion)
         answer = client.getAnswer(
