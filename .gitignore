@@ -1,2 +1,4 @@
 log.log
 dist/
+settings.local.json
+__pycache__

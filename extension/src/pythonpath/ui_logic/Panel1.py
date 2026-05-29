@@ -9,7 +9,7 @@
 
 import uno, tempfile, unohelper
 import os, random, string, threading
-from .utils import is_older, is_ollama, ollama_model
+from .utils import is_older, is_self_hosted, self_hosted_model
 from dataclasses import dataclass
 
 
@@ -208,9 +208,9 @@ class Panel1(Panel1_UI):
 
             response = (
                 self.server_response(inputPrompt, docText, model, apiKey)
-                if not is_ollama(model)
+                if not is_self_hosted(model)
                 else self.ollama_response(
-                    inputPrompt, docText, ollama_model(model), modelUrl, apiKey
+                    inputPrompt, docText, self_hosted_model(model), modelUrl, apiKey
                 )
             )
 

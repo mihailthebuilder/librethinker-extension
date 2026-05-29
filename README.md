@@ -26,7 +26,7 @@ The extension will now use the LLM vendor's API, with your key, to generate the 
 
 ## Ollama
 
-In the BYOK/Ollama Settings, set the model ID as `sh/ollama/{ollamaModelYouWant}` ; for example, `sh/ollama/gemma3:1b` to use the `gemma3:1b` Ollama model.
+In the BYOK/Ollama Settings, set the model ID with the `sh/` prefix; for example, `sh/gemma3:1b` to use the `gemma3:1b` Ollama model. (The older `sh/ollama/` prefix still works but is deprecated.)
 
 By default, the extension sends the request to `http://localhost:11434/api/chat`. You can change the URL by
 setting a value in the `Model URL` input.
@@ -34,6 +34,15 @@ setting a value in the `Model URL` input.
 Values in the `Model API key` will be passed in the `Authorization: Bearer $API_KEY` header. This is useful
 if you're self-hosting on a remote machine, and you want to verify requests to that endpoint before
 processing them.
+
+## LM Studio and other OpenAI-compatible servers
+
+The self-hosted path also works with any OpenAI-compatible chat endpoint (LM Studio, llama.cpp, vLLM, etc).
+Set the model ID with the `sh/` prefix (e.g. `sh/google/gemma-4-e4b`), and set the
+`Model URL` to the server's OpenAI-compatible chat completions endpoint. The longer `sh/ollama/` prefix
+also routes to the self-hosted path, but is deprecated; prefer `sh/`.
+
+For LM Studio, that URL is `http://127.0.0.1:1234/v1/chat/completions` (not its native `/api/v1/chat`).
 
 ## Buy me a coffee
 

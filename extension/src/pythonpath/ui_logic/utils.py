@@ -6,9 +6,17 @@ def is_older(v1: str, v2: str) -> bool:
     return v1_parts < v2_parts
 
 
-def is_ollama(model: str) -> bool:
-    return model.startswith("sh/ollama/")
+# sh/ollama/ is deprecated in favour of sh/, but still accepted.
+# Longest first so sh/ollama/ is stripped before the generic sh/ prefix.
+SELF_HOSTED_PREFIXES = ("sh/ollama/", "sh/")
 
 
-def ollama_model(model: str) -> str:
-    return model[len("sh/ollama/") :]
+def is_self_hosted(model: str) -> bool:
+    return model.startswith("sh/")
+
+
+def self_hosted_model(model: str) -> str:
+    for prefix in SELF_HOSTED_PREFIXES:
+        if model.startswith(prefix):
+            return model[len(prefix) :]
+    return model

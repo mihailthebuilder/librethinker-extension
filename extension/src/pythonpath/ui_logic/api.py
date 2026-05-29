@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 import json
 import platform
 from dataclasses import dataclass
@@ -220,8 +221,22 @@ class OllamaClient:
 
             with urllib.request.urlopen(req) as response:
                 data = json.loads(response.read().decode("utf-8"))
-                answer = data["message"]["content"]
 
+            answer = self.extract_answer(data)
             return OllamaClientResponse(success=True, response=answer)
+        except urllib.error.HTTPError as e:
+            message = f"HTTP Error {e.code}: {e.reason}"
+            body = e.read().decode("utf-8", errors="replace")
+            if body:
+                message += f"\n{body}"
+            return OllamaClientResponse(success=False, message=message)
         except Exception as e:
             return OllamaClientResponse(success=False, message=str(e))
+
+    @staticmethod
+    def extract_answer(data: dict) -> str:
+        # OpenAI-compatible servers (LM Studio, llama.cpp, vLLM, ...) nest the
+        # reply under choices[]; Ollama's /api/chat returns it at the top level.
+        if "choices" in data:
+            return data["choices"][0]["message"]["content"]
+        return data["message"]["content"]
