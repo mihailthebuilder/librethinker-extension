@@ -45,7 +45,7 @@ from com.sun.star.beans import PropertyValue
 
 try:
     from ui.Panel1_UI import Panel1_UI
-except:
+except ImportError:
     from pythonpath.ui.Panel1_UI import Panel1_UI
 
 # -------------------------------------
@@ -191,6 +191,11 @@ class Panel1(Panel1_UI):
 
             self.Submit.Enabled = False
             self.StatusText.Label = "Loading..."
+            
+            # --------- NEW: Clear output box on new submit ---------
+            output_box = self.DialogContainer.getControl("ModelOutputBox")
+            if output_box:
+                output_box.setText("")
 
             threading.Thread(target=self.submit_background, args=(docText,)).start()
 
@@ -220,7 +225,33 @@ class Panel1(Panel1_UI):
             currentComponent = desktop.getCurrentComponent()
             selection = currentComponent.CurrentController.getSelection()
             text_range = selection.getByIndex(0)
-            text_range.setString(response.answer)
+            
+            desktop = self.ctx.ServiceManager.createInstanceWithContext(
+                "com.sun.star.frame.Desktop", self.ctx
+            )
+            currentComponent = desktop.getCurrentComponent()
+            selection = currentComponent.CurrentController.getSelection()
+            text_range = selection.getByIndex(0)
+            
+            # --------- CHANGE: Route output based on dropdown selection ---------
+            output_display_mode = self.DialogContainer.getControl("ModelOutputIn").getText()
+            
+            if output_display_mode == "Model output box":
+                # Send the text directly to the new UI box, leave the document alone
+                self.DialogContainer.getControl("ModelOutputBox").setText(response.answer)
+                
+            elif output_display_mode == "Insert after selected text":
+                doc_text = text_range.getText()
+                cursor = doc_text.createTextCursorByRange(text_range)
+                cursor.collapseToEnd()
+                doc_text.insertString(cursor, " " + response.answer, True)
+                cursor.CharColor = 0xFF0000
+                cursor.collapseToEnd()
+                
+            else: 
+                # "Replace selected text" (This acts as our default fallback)
+                text_range.setString(response.answer)
+            # --------------------------------------------------------------------
 
             self.StatusText.Label = response.label
 
@@ -282,6 +313,59 @@ class Panel1(Panel1_UI):
             raise Exception(error_message)
         label = f"Done. Generated with Ollama model {model}."
         return Response(answer=answer.response, label=label)
+
+    def GetOllamaModels_OnClick(self):
+        try:
+            self.StatusText.Label = "Fetching models..."
+            # Disable button to prevent spam clicking
+            btn = self.DialogContainer.getControl("GetOllamaModels")
+            if btn:
+                btn.Enable = False
+                
+            threading.Thread(target=self.get_ollama_models_background).start()
+        except Exception as e:
+            self.messageBox(str(e), "Error", ERRORBOX)
+
+    def get_ollama_models_background(self):
+        try:
+            modelUrl = self.DialogContainer.getControl("ModelUrl").getText()
+            client = OllamaClient()
+            
+            # This triggers the fallback logic and error handling in api.py
+            models = client.getModels(modelUrl)
+
+            if not models:
+                # Dialog box if connection succeeded but no models are found
+                self.messageBox("No models found. Make sure you have pulled at least one model into Ollama.", "Info", INFOBOX)
+                self.StatusText.Label = ""
+                return
+            
+            # LibreThinker expects Ollama models to be prefixed with 'sh/ollama/'
+            formatted_models = [f"sh/ollama/{m}" for m in models]
+            
+            model_combo = self.DialogContainer.getControl("ModelId")
+            
+            # Clear existing dropdown items and add the newly sorted ones
+            model_combo.removeItems(0, model_combo.getItemCount())
+            model_combo.addItems(tuple(formatted_models), 0)
+            
+            # Auto-select the first model if the current text is empty or invalid
+            current_text = model_combo.getText()
+            if current_text not in formatted_models:
+                model_combo.setText(formatted_models[0])
+
+            self.StatusText.Label = "Ollama models loaded."
+            
+        except Exception as e:
+            # Pops up the dialog box with the exact error if Ollama isn't running
+            self.messageBox(str(e), "Connection Error", ERRORBOX)
+            self.StatusText.Label = ""
+            
+        finally:
+            # Always re-enable the button when the task finishes or fails
+            btn = self.DialogContainer.getControl("GetOllamaModels")
+            if btn:
+                btn.Enable = True
 
     def SaveSettings_OnClick(self):
         try:

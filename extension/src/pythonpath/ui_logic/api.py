@@ -185,6 +185,29 @@ class LtClient:
 
 
 class OllamaClient:
+    def getModels(self, modelUrl: str) -> list[str]:
+        # Use provided URL, or fallback to default if blank
+        base_url = modelUrl.strip() if len(modelUrl.strip()) > 0 else "http://localhost:11434"
+        
+        # Format the URL to hit the tags endpoint
+        if base_url.endswith("/api/chat"):
+            url = base_url.replace("/api/chat", "/api/tags")
+        else:
+            url = base_url.rstrip("/") + "/api/tags"
+
+        try:
+            req = urllib.request.Request(url, method="GET")
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode("utf-8"))
+                models = [model["name"] for model in data.get("models", [])]
+                return sorted(models) # Sort alphabetically
+                
+        # Catch connection/timeout errors to give a clear dialog message
+        except urllib.error.URLError:
+            raise Exception(f"Could not connect to Ollama at:\n{base_url}\n\nPlease ensure Ollama is running and the URL is correct.")
+        except Exception as e:
+            raise Exception(f"An error occurred while fetching models:\n{str(e)}")
+    
     def getAnswer(
         self, userPrompt: str, text: str, model: str, modelUrl: str, apiKey: str
     ) -> OllamaClientResponse:

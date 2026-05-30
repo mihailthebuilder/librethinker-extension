@@ -51,7 +51,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.DialogModel.PositionX = "204"
         self.DialogModel.PositionY = "117"
         self.DialogModel.Width = 156
-        self.DialogModel.Height = 400
+        self.DialogModel.Height = 580
         self.DialogModel.Closeable = True
         self.DialogModel.Moveable = True
 
@@ -68,7 +68,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.Prompt.PositionY = "8"
         self.Prompt.Width = 136
         self.Prompt.Height = 104
-        self.Prompt.Text = "YourPromptHere"
+        self.Prompt.Text = "Type your prompt here"
         self.Prompt.MultiLine = True
         self.Prompt.VerticalAlign = "TOP"
         self.Prompt.AutoVScroll = True
@@ -108,6 +108,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.SelectedTextOption.Width = 64
         self.SelectedTextOption.Height = 10
         self.SelectedTextOption.Label = "Selected text"
+        self.SelectedTextOption.State = True
 
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("SelectedTextOption", self.SelectedTextOption)
@@ -124,17 +125,32 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.EntireDocumentOption.Width = 64
         self.EntireDocumentOption.Height = 10
         self.EntireDocumentOption.Label = "Entire document"
-        self.EntireDocumentOption.State = True
 
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("EntireDocumentOption", self.EntireDocumentOption)
+        
+        # --------- NEW: Model Output Textbox ---------
+        self.ModelOutputBox = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlEditModel"
+        )
+        self.ModelOutputBox.Name = "ModelOutputBox"
+        self.ModelOutputBox.TabIndex = self.EntireDocumentOption.TabIndex + 1
+        self.ModelOutputBox.PositionX = dialogLeftPadding
+        self.ModelOutputBox.PositionY = self.EntireDocumentOption.PositionY + 20
+        self.ModelOutputBox.Width = 136
+        self.ModelOutputBox.Height = 104
+        self.ModelOutputBox.MultiLine = True
+        self.ModelOutputBox.VScroll = True  # Makes it vertically scrollable
+        self.ModelOutputBox.ReadOnly = True # Selectable, but cannot be typed in
+
+        self.DialogModel.insertByName("ModelOutputBox", self.ModelOutputBox)
 
         self.StatusText = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
         self.StatusText.Name = "StatusText"
         self.StatusText.PositionX = dialogLeftPadding
-        self.StatusText.PositionY = 148
+        self.StatusText.PositionY = self.ModelOutputBox.PositionY + 90 # Anchored below the new textbox
         self.StatusText.Width = 136
         self.StatusText.Height = 30
         self.StatusText.Label = ""
@@ -198,12 +214,32 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
             "SettingsSectionHeading", self.SettingsSectionHeading
         )
 
+        # --------- NEW: Button placed FIRST, right under the Settings Heading ---
+        self.GetOllamaModels = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlButtonModel"
+        )
+        self.GetOllamaModels.Name = "GetOllamaModels"
+        self.GetOllamaModels.TabIndex = self.BuyMeCoffee.TabIndex + 1
+        self.GetOllamaModels.PositionX = dialogLeftPadding
+        self.GetOllamaModels.PositionY = self.SettingsSectionHeading.PositionY + 15
+        self.GetOllamaModels.Width = 100
+        self.GetOllamaModels.Height = 23
+        self.GetOllamaModels.Label = "Get Ollama Models"
+
+        self.DialogModel.insertByName("GetOllamaModels", self.GetOllamaModels)
+
+        self.DialogContainer.getControl("GetOllamaModels").addActionListener(self)
+        self.DialogContainer.getControl("GetOllamaModels").setActionCommand(
+            "GetOllamaModels_OnClick"
+        )
+
+        # --------- CHANGE: ModelIdLabel anchored to the new button ---
         self.ModelIdLabel = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
         self.ModelIdLabel.Name = "ModelIdLabel"
         self.ModelIdLabel.PositionX = dialogLeftPadding
-        self.ModelIdLabel.PositionY = self.SettingsSectionHeading.PositionY + 15
+        self.ModelIdLabel.PositionY = self.GetOllamaModels.PositionY + 30
         self.ModelIdLabel.Width = 136
         self.ModelIdLabel.Height = 10
         self.ModelIdLabel.Label = "Model ID (e.g. claude-opus-4-6)"
@@ -211,12 +247,14 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         self.DialogModel.insertByName("ModelIdLabel", self.ModelIdLabel)
 
+        # --------- CHANGE: ComboBox placed below the Label ---
         self.ModelId = self.DialogModel.createInstance(
-            "com.sun.star.awt.UnoControlEditModel"
+            "com.sun.star.awt.UnoControlComboBoxModel"
         )
+        self.ModelId.Dropdown = True # Enables the dropdown arrow
 
         self.ModelId.Name = "ModelId"
-        self.ModelId.TabIndex = self.BuyMeCoffee.TabIndex + 1
+        self.ModelId.TabIndex = self.GetOllamaModels.TabIndex + 1
         self.ModelId.PositionX = dialogLeftPadding
         self.ModelId.PositionY = self.ModelIdLabel.PositionY + 10
         self.ModelId.Width = 136
@@ -225,6 +263,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         self.DialogModel.insertByName("ModelId", self.ModelId)
 
+        # --------- CHANGE: ModelUrlLabel anchored to the ComboBox ---
         self.ModelUrlLabel = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
@@ -279,16 +318,43 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("ModelApiKey", self.ModelApiKey)
+        
+        # --------- NEW: Dropdown for Model Output In ---------
+        self.ModelOutputInLabel = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlFixedTextModel"
+        )
+        self.ModelOutputInLabel.Name = "ModelOutputInLabel"
+        self.ModelOutputInLabel.PositionX = dialogLeftPadding
+        self.ModelOutputInLabel.PositionY = self.ModelApiKey.PositionY + 20
+        self.ModelOutputInLabel.Width = 136
+        self.ModelOutputInLabel.Height = 10
+        self.ModelOutputInLabel.Label = "Model Output In:"
+
+        self.DialogModel.insertByName("ModelOutputInLabel", self.ModelOutputInLabel)
+
+        self.ModelOutputIn = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlComboBoxModel"
+        )
+        self.ModelOutputIn.Dropdown = True
+        self.ModelOutputIn.Name = "ModelOutputIn"
+        self.ModelOutputIn.TabIndex = self.ModelApiKey.TabIndex + 1
+        self.ModelOutputIn.PositionX = dialogLeftPadding
+        self.ModelOutputIn.PositionY = self.ModelOutputInLabel.PositionY + 10
+        self.ModelOutputIn.Width = 136
+        self.ModelOutputIn.Height = 15
+        self.ModelOutputIn.StringItemList = ("Replace selected text", "Insert after selected text", "Model output box")
+        self.ModelOutputIn.Text = "Model output box" # The default option
+
+        self.DialogModel.insertByName("ModelOutputIn", self.ModelOutputIn)
 
         # --------- create an instance of Button control, set properties ---
         self.SaveSettings = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlButtonModel"
         )
-
         self.SaveSettings.Name = "SaveSettings"
-        self.SaveSettings.TabIndex = self.ModelApiKey.TabIndex + 1
+        self.SaveSettings.TabIndex = self.ModelOutputIn.TabIndex + 1
         self.SaveSettings.PositionX = dialogLeftPadding
-        self.SaveSettings.PositionY = self.ModelApiKey.PositionY + 20
+        self.SaveSettings.PositionY = self.ModelOutputIn.PositionY + 25 # Anchored to the new dropdown
         self.SaveSettings.Width = 64
         self.SaveSettings.Height = 23
         self.SaveSettings.Label = "Save settings"
@@ -307,7 +373,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         )
         self.SaveSettingsStatus.Name = "SaveSettingsStatus"
         self.SaveSettingsStatus.PositionX = dialogLeftPadding
-        self.SaveSettingsStatus.PositionY = self.SaveSettings.PositionY + 30
+        self.SaveSettingsStatus.PositionY = self.SaveSettings.PositionY + 30 # Anchored to the button
         self.SaveSettingsStatus.Width = 136
         self.SaveSettingsStatus.Height = 30
         self.SaveSettingsStatus.Label = ""
@@ -329,6 +395,9 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         if oActionEvent.ActionCommand == "SaveSettings_OnClick":
             self.SaveSettings_OnClick()
+
+        if oActionEvent.ActionCommand == "GetOllamaModels_OnClick":
+            self.GetOllamaModels_OnClick()
 
     # -----------------------------------------------------------
     #               Window (dialog/panel) events
