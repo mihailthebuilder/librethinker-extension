@@ -95,11 +95,6 @@ class Panel1(Panel1_UI):
                 self, ctx=self.ctx, dialog=self.dialog, settings=self.settings
             )
 
-            # get desktop
-            desktop = ctx.getByName("/singletons/com.sun.star.frame.theDesktop")
-            # get document
-            self.document = desktop.getCurrentComponent()
-
         except Exception as e:
             self.messageBox(
                 f"Error initializing panel: {str(traceback.format_exc())}",
@@ -140,6 +135,11 @@ class Panel1(Panel1_UI):
     # -----------------------------------------------------------
 
     def get_all_txt(self):
+        desktop = self.ctx.ServiceManager.createInstanceWithContext(
+            "com.sun.star.frame.Desktop", self.ctx
+        )
+        document = desktop.getCurrentComponent()
+
         tmp_dir = tempfile.gettempdir()
         name = (
             "".join(random.choices(string.ascii_lowercase + string.digits, k=12))
@@ -156,7 +156,7 @@ class Panel1(Panel1_UI):
             ),
         )
 
-        self.document.storeToURL(file_url, props)
+        document.storeToURL(file_url, props)
 
         with open(out_path, "r", encoding="utf-8-sig", errors="replace") as f:
             txt = f.read()
