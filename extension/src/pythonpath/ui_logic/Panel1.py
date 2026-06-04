@@ -202,6 +202,10 @@ class Panel1(Panel1_UI):
     def submit_background(self, docText: str):
         try:
             inputPrompt: str = self.DialogContainer.getControl("Prompt").getText()
+
+            if self.settings.savedPrompt and inputPrompt != self.settings.savedPrompt:
+                self.settings.clearPrompt()
+
             model: str = self.DialogContainer.getControl("ModelId").getText()
             modelUrl: str = self.DialogContainer.getControl("ModelUrl").getText()
             apiKey: str = self.DialogContainer.getControl("ModelApiKey").getText()
@@ -282,6 +286,14 @@ class Panel1(Panel1_UI):
             raise Exception(error_message)
         label = f"Done. Generated with Ollama model {model}."
         return Response(answer=answer.response, label=label)
+
+    def SavePrompt_OnClick(self):
+        try:
+            prompt = self.DialogContainer.getControl("Prompt").getText()
+            self.settings.savePrompt(prompt)
+            self.StatusText.Label = "Prompt saved."
+        except Exception as e:
+            self.messageBox(f"Error saving prompt: {str(e)}", "Error", ERRORBOX)
 
     def SaveSettings_OnClick(self):
         try:

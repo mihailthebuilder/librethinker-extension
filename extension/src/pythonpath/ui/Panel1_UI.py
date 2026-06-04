@@ -68,7 +68,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.Prompt.PositionY = "8"
         self.Prompt.Width = 136
         self.Prompt.Height = 104
-        self.Prompt.Text = "YourPromptHere"
+        self.Prompt.Text = self.settings.savedPrompt or "YourPromptHere"
         self.Prompt.MultiLine = True
         self.Prompt.VerticalAlign = "TOP"
         self.Prompt.AutoVScroll = True
@@ -129,12 +129,34 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         # inserts the control model into the dialog model
         self.DialogModel.insertByName("EntireDocumentOption", self.EntireDocumentOption)
 
+        # --------- create an instance of Button control, set properties ---
+        self.SavePrompt = self.DialogModel.createInstance(
+            "com.sun.star.awt.UnoControlButtonModel"
+        )
+
+        self.SavePrompt.Name = "SavePrompt"
+        self.SavePrompt.TabIndex = self.EntireDocumentOption.TabIndex + 1
+        self.SavePrompt.PositionX = dialogLeftPadding
+        self.SavePrompt.PositionY = "146"
+        self.SavePrompt.Width = 64
+        self.SavePrompt.Height = 14
+        self.SavePrompt.Label = "Save prompt"
+
+        # inserts the control model into the dialog model
+        self.DialogModel.insertByName("SavePrompt", self.SavePrompt)
+
+        # add the action listener
+        self.DialogContainer.getControl("SavePrompt").addActionListener(self)
+        self.DialogContainer.getControl("SavePrompt").setActionCommand(
+            "SavePrompt_OnClick"
+        )
+
         self.StatusText = self.DialogModel.createInstance(
             "com.sun.star.awt.UnoControlFixedTextModel"
         )
         self.StatusText.Name = "StatusText"
         self.StatusText.PositionX = dialogLeftPadding
-        self.StatusText.PositionY = 148
+        self.StatusText.PositionY = 166
         self.StatusText.Width = 136
         self.StatusText.Height = 30
         self.StatusText.Label = ""
@@ -161,7 +183,7 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
         self.GetHelp.Enabled = True
         self.GetHelp.PositionX = dialogLeftPadding
         self.GetHelp.PositionY = self.LinksSectionHeading.PositionY + 15
-        self.GetHelp.TabIndex = self.EntireDocumentOption.TabIndex + 1
+        self.GetHelp.TabIndex = self.SavePrompt.TabIndex + 1
         self.GetHelp.Width = 30
         self.GetHelp.Height = 10
         self.GetHelp.Label = "Get Help"
@@ -326,6 +348,9 @@ class Panel1_UI(unohelper.Base, XActionListener, XWindowListener, XJobExecutor):
 
         if oActionEvent.ActionCommand == "Submit_OnClick":
             self.Submit_OnClick()
+
+        if oActionEvent.ActionCommand == "SavePrompt_OnClick":
+            self.SavePrompt_OnClick()
 
         if oActionEvent.ActionCommand == "SaveSettings_OnClick":
             self.SaveSettings_OnClick()

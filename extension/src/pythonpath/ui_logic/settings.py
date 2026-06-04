@@ -15,6 +15,7 @@ class Settings:
         self.modelId = data.get("modelId", "")
         self.apiKey = data.get("apiKey", "")
         self.modelUrl = data.get("modelUrl", "")
+        self.savedPrompt = data.get("savedPrompt", "")
 
     @staticmethod
     def getSettingsFilePath(ctx) -> Path:
@@ -24,6 +25,25 @@ class Settings:
         return user_config_path / "LibreThinkerConfig.json"
 
     def save(self, modelId: str, apiKey: str, modelUrl: str):
-        data = {"modelId": modelId, "apiKey": apiKey, "modelUrl": modelUrl}
+        self.modelId = modelId
+        self.apiKey = apiKey
+        self.modelUrl = modelUrl
+        self._persist()
+
+    def savePrompt(self, prompt: str):
+        self.savedPrompt = prompt
+        self._persist()
+
+    def clearPrompt(self):
+        self.savedPrompt = ""
+        self._persist()
+
+    def _persist(self):
+        data = {
+            "modelId": self.modelId,
+            "apiKey": self.apiKey,
+            "modelUrl": self.modelUrl,
+            "savedPrompt": self.savedPrompt,
+        }
         with open(self.settingsFilePath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
