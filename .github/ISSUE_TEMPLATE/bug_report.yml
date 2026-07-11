@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a problem with the LibreThinker extension
+labels: ["bug"]
+body:
+  - type: checkboxes
+    id: pre-submission-checks
+    attributes:
+      label: Before submitting
+      description: Please complete these checks before opening the issue.
+      options:
+        - label: I have attached a screenshot or video that shows the issue.
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the issue
+      description: What went wrong? What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot / video
+      description: Paste or drag your screenshot or video here.
+    validations:
+      required: true
