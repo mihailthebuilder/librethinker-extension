@@ -10,6 +10,8 @@ body:
       options:
         - label: I have attached a screenshot or video that shows the issue.
           required: true
+        - label: I have troubleshooted the issue with an LLM (e.g. ChatGPT, Claude) to confirm it is a bug in the extension and not a mistake on my end. This helps me focus on fixing actual bugs in the code; this is a free project I work on in the evenings, so your effort here goes a long way!
+          required: true
 
   - type: textarea
     id: description
