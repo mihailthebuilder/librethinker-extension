@@ -10,8 +10,14 @@ body:
       options:
         - label: I have attached a screenshot or video that shows the issue.
           required: true
-        - label: I have troubleshooted the issue with an LLM (e.g. ChatGPT, Claude) to confirm it is a bug in the extension and not a mistake on my end. This helps me focus on fixing actual bugs in the code; this is a free project I work on in the evenings, so your effort here goes a long way!
+        - label: I have troubleshooted the issue with an LLM (e.g. ChatGPT, Claude) to confirm it is a bug in the extension and not a mistake on my end.
           required: true
+        - label: 'If using a self-hosted model, I have prefixed the model ID with "sh/" (e.g. "sh/gemma3:1b").'
+          required: true
+
+  - type: markdown
+    attributes:
+      value: This helps me focus on fixing actual bugs in the code; this is a free project I work on in the evenings, so your effort here goes a long way!
 
   - type: textarea
     id: description
@@ -25,6 +31,6 @@ body:
     id: screenshot
     attributes:
       label: Screenshot / video
-      description: Paste or drag your screenshot or video here.
+      description: Paste or drag your screenshot or video here. It must show the extension sidebar with the inputs, the error message, and the Writer application.
     validations:
       required: true
